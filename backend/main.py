@@ -2,19 +2,19 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-client = []
+clients = []
 
-@app.post("/addUser", tags=["Cliente"])
-def add_user(id: int, name: str, phone: str, email: str):
-    user = {
+@app.post("/addClient", tags=["Cliente"])
+def add_client(id: int, name: str, phone: str, email: str):
+    client = {
         "id": id,
         "name": name,
         "phone": phone,
         "email": email
     }
-    client.append(user)
-    return {"message": "User added successfully", "user": user}
+    clients.append(client)
+    return {"message": "Cliente agregado correctamente!", "client": client}
 
-@app.get("/getUsers", tags=["Cliente"])
-def get_users():
-    return {"users": client}
+@app.get("/getClients", tags=["Cliente"])
+def get_clients():
+    return {"Clientes": clients}

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from pydantic import BaseModel
 app = FastAPI()
 
 clients = []
@@ -38,7 +38,7 @@ def delete_clientes(email: str):
 
 Proteinas = []
 
-class Proteina():
+class Proteina(BaseModel):
     id_Proteina : int
     nom_Proteina : str
     cantidad : int

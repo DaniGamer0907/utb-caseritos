@@ -41,7 +41,7 @@ Proteinas = []
 class Proteina(BaseModel):
     id_Proteina : int
     nom_Proteina : str
-    cantidad : int
+    disponibilidad : int
 
 
 @app.post("/crearProteinas", tags= ["Proteinas"] )
@@ -50,7 +50,30 @@ def crearProteinas(Proteina:Proteina):
     return {"mensaje": "proteina agregado correctamente"}
 
 
-@app.get("/getProteina", tags=["Proteinas"])
-def get_Proteina():
-    return {"Proteina" : Proteina}
+@app.get("/Proteina", tags=["Proteinas"])
+def obtenerProteina():
+    return {"Proteina" : Proteinas}
 
+@app.get("/proteinaID" , tags=["Proteinas"])
+def obtener_proteina(id: int):
+    for proteina in Proteinas:
+        if proteina.id_Proteina == id:
+            return {"mensaje": "proteina encontrada" , "proteina" :
+                     proteina}
+        
+@app.put("/proteinaID", tags=["Proteinas"])
+def actualizarProteinas(id:int, nueva_proteina:Proteina):
+    for proteina in Proteinas:
+        if proteina.id_Proteina == id:
+            proteina.nom_Proteina = nueva_proteina.nom_Proteina
+            proteina.disponibilidad = nueva_proteina.disponibilidad
+            return {"mensaje": "proteina actualizada correctamente", "proteina": proteina}
+    return {"mensaje": "proteina no encontrada"}
+
+@app.delete("/proteinaID", tags=["Proteinas"])
+def eliminar_proteina(id: int):
+    for proteina in Proteinas:
+        if proteina.id_Proteina == id:
+            Proteinas.remove(proteina)
+            return {"mensaje": "proteina eliminada correctamente"}
+    return {"mensaje": "proteina no encontrada"}

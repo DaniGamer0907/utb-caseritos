@@ -77,3 +77,44 @@ def eliminar_proteina(id: int):
             Proteinas.remove(proteina)
             return {"mensaje": "proteina eliminada correctamente"}
     return {"mensaje": "proteina no encontrada"}
+
+tipo_almuerzos = []
+
+class TipoAlmuerzo(BaseModel):
+    id_tipo_almuerzo : int
+    nom_tipo_almuerzo : str
+    precio : float
+
+@app.post("/crearTipoAlmuerzo", tags=["TipoAlmuerzo"])
+def crear_tipo_almuerzo(tipo_almuerzo: TipoAlmuerzo):
+    tipo_almuerzos.append(tipo_almuerzo)
+    return {"mensaje": "Tipo de almuerzo agregado correctamente"}
+
+@app.get("/tipoAlmuerzo", tags=["TipoAlmuerzo"])
+def obtener_tipo_almuerzo():
+    return {"TipoAlmuerzo": tipo_almuerzos}
+
+@app.get("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
+def obtener_tipo_almuerzo_id(id: int):
+    for tipo_almuerzo in tipo_almuerzos:
+        if tipo_almuerzo.id_tipo_almuerzo == id:
+            return {"mensaje": "Tipo de almuerzo encontrado", "tipo_almuerzo": tipo_almuerzo}
+    return {"mensaje": "Tipo de almuerzo no encontrado"}
+
+@app.put("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
+def actualizar_tipo_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzo):
+    for tipo_almuerzo in tipo_almuerzos:
+        if tipo_almuerzo.id_tipo_almuerzo == id:
+            tipo_almuerzo.nom_tipo_almuerzo = nuevo_tipo_almuerzo.nom_tipo_almuerzo
+            tipo_almuerzo.precio = nuevo_tipo_almuerzo.precio
+            return {"mensaje": "Tipo de almuerzo actualizado correctamente", "tipo_almuerzo": tipo_almuerzo}
+    return {"mensaje": "Tipo de almuerzo no encontrado"}
+
+@app.delete("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
+def eliminar_tipo_almuerzo(id: int):
+    for tipo_almuerzo in tipo_almuerzos:
+        if tipo_almuerzo.id_tipo_almuerzo == id:
+            tipo_almuerzos.remove(tipo_almuerzo)
+            return {"mensaje": "Tipo de almuerzo eliminado correctamente"}
+    return {"mensaje": "Tipo de almuerzo no encontrado"}
+

@@ -1,48 +1,41 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from clases import Cliente, Proteina, TipoAlmuerzo
+
 app = FastAPI()
 
-clients = []
+## Clientes
+clientes = []
 
 @app.post("/addClient", tags=["Cliente"])
-def add_client(name: str, lastname: str, address:str, phone: str, email: str):
-    client = {
-        "name": name,
-        "lasname":lastname,
-        "email": email,
-        "address": address,
-        "phone": phone,
-    }
-    clients.append(client)
-    return {"message": "Cliente agregado correctamente!", "client": client}
+def add_client(cliente: Cliente):
+    clientes.append(cliente)
+    return {"message": "Cliente agregado correctamente!", "client": cliente}
 
 @app.get("/getClients", tags=["Cliente"])
 def get_clients():
-    return {"Clientes": clients}
+    return {"Clientes": clientes}
 
 @app.put("/putCliente", tags=["Cliente"])
-def put_cliente(email: str, cliente_update: dict):
-    for cliente in clients:
-        if cliente.get("email") == email:
-            cliente.update(cliente_update)
+def put_cliente(email: str, cliente_update: Cliente):
+    for cliente in clientes:
+        if cliente.email== email:
+            cliente.name = cliente_update.name
+            cliente.lastname = cliente_update.lastname
+            cliente.address = cliente_update.address
+            cliente.phone = cliente_update.phone
             return "Se ha actualizado los datos del cliente correctamente"
     return "No se ha encontrado el cliente con el email ingresado"
 
 @app.delete("/deleteCliente", tags=["Cliente"])
 def delete_clientes(email: str):
-    for cliente in clients:
-        if cliente.get("email") == email:
-            clients.remove(cliente)
+    for cliente in clientes:
+        if cliente.email == email:
+            clientes.remove(cliente)
             return "Se ha borrado existosamente"
     return "No se ha encontrado el cliente"
 
+## proteinas
 Proteinas = []
-
-class Proteina(BaseModel):
-    id_Proteina : int
-    nom_Proteina : str
-    disponibilidad : int
-
 
 @app.post("/crearProteinas", tags= ["Proteinas"] )
 def crearProteinas(Proteina:Proteina):
@@ -78,12 +71,8 @@ def eliminar_proteina(id: int):
             return {"mensaje": "proteina eliminada correctamente"}
     return {"mensaje": "proteina no encontrada"}
 
+## tipo de almuerzo
 tipo_almuerzos = []
-
-class TipoAlmuerzo(BaseModel):
-    id_tipo_almuerzo : int
-    nom_tipo_almuerzo : str
-    precio : float
 
 @app.post("/crearTipoAlmuerzo", tags=["TipoAlmuerzo"])
 def crear_tipo_almuerzo(tipo_almuerzo: TipoAlmuerzo):

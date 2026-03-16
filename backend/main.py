@@ -1,11 +1,12 @@
-from fastapi import FastAPI
-from clases import Cliente, Proteina, TipoAlmuerzo
+from fastapi import FastAPI,Depends
+from modelos import Proteina
+from clases import Proteinas2
+from db import get_db
+from sqlalchemy.orm import Session
 
 app = FastAPI()
 
 ## Clientes
-clientes = []
-
 @app.post("/addClient", tags=["Cliente"])
 def add_client(cliente: Cliente):
     clientes.append(cliente)
@@ -34,14 +35,14 @@ def delete_clientes(email: str):
             return "Se ha borrado existosamente"
     return "No se ha encontrado el cliente"
 
-## proteinas
-Proteinas = []
 
+# proteinas
 @app.post("/crearProteinas", tags= ["Proteinas"] )
-def crearProteinas(Proteina:Proteina):
-    Proteinas.append(Proteina)
+async def crearProteinas(proteinas2: Proteinas2, SessionLocal: Session = Depends(get_db)):
+    proteina=Proteina(nombre=proteinas2.nombre, avaliable=proteinas2.avaliable)
+    SessionLocal.add(proteina)
+    SessionLocal.commit()
     return {"mensaje": "proteina agregado correctamente"}
-
 
 @app.get("/Proteina", tags=["Proteinas"])
 def obtenerProteina():

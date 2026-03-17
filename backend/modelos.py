@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String, Float,Boolean, ForeignKey
+from sqlalchemy import Column,Integer,String, Float,Boolean, ForeignKey,Date
 from sqlalchemy.orm import declarative_base
 from db import engine
 
@@ -28,7 +28,7 @@ class TipoAlmuerzo(Base):
 class Pedido(Base):
     __tablename__ = "pedido"
     id = Column(Integer,primary_key=True)
-    fecha_creacion = Column(String)
+    fecha_creacion = Column(Date)
     estado = Column(Boolean)
     sugerencia = Column(String)
     cliente_id = Column(Integer,ForeignKey('cliente.id'))
@@ -37,7 +37,7 @@ class Almuerzo(Base):
     __tablename__ = "almuerzo"
     id = Column(Integer,primary_key=True)
     descripcion = Column(String)
-    fecha = Column(String)
+    fecha = Column(Date)
     proteinaid = Column(Integer, ForeignKey('proteina.id'))
     tipalmuerzo = Column(Integer,ForeignKey('tipoalmuerzo.id'))
 
@@ -55,7 +55,7 @@ class pago(Base):
     id = Column(Integer,primary_key=True)
     pedidoid = Column(Integer, ForeignKey('pedido.id'))
     metodopago = Column(String)
-    diadelpago = Column(String)
+    diadelpago = Column(Date)
     monto = Column(Float)
     
 Base.metadata.create_all(engine)

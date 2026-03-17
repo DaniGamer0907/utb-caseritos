@@ -1,110 +1,149 @@
-from fastapi import FastAPI,Depends
-from modelos import Proteina
-from clases import Proteinas2
+from fastapi import FastAPI,Depends,HTTPException
+from modelos import Proteina, Cliente, Almuerzo
+from clases import ProteinasC, ClienteC, TipoAlmuerzoC
 from db import get_db
 from sqlalchemy.orm import Session
+
 
 app = FastAPI()
 
 ## Clientes
 @app.post("/addClient", tags=["Cliente"])
-def add_client(cliente: Cliente):
-    clientes.append(cliente)
+def add_client(cliente: ClienteC, db: Session = Depends(get_db)):
+    clientedb = Cliente(nombre = cliente.name, lastname = cliente.lastname, address=cliente.address, phone=cliente.phone, email=cliente.email)
+    db.add(clientedb)
+    db.commit()
     return {"message": "Cliente agregado correctamente!", "client": cliente}
 
+@app.get("/ClienteList", tags=["Cliente"])
+def obtenerClientes(db: Session = Depends(get_db)):
+    get = db.query(Cliente).all()
+    if not get:
+        raise HTTPException(status_code=404, detail="Clientes no encontrados")
+    else:
+        return get
+
 @app.get("/getClients", tags=["Cliente"])
-def get_clients():
-    return {"Clientes": clientes}
+def get_clients(id: int, db: Session = Depends(get_db)):
+    get = db.query(Cliente).filter(Cliente.id==id).first()
+    if not get:
+         raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    else:
+        return get
 
 @app.put("/putCliente", tags=["Cliente"])
-def put_cliente(email: str, cliente_update: Cliente):
-    for cliente in clientes:
-        if cliente.email== email:
-            cliente.name = cliente_update.name
-            cliente.lastname = cliente_update.lastname
-            cliente.address = cliente_update.address
-            cliente.phone = cliente_update.phone
-            return "Se ha actualizado los datos del cliente correctamente"
-    return "No se ha encontrado el cliente con el email ingresado"
+def put_cliente(id: int, cliente_update: ClienteC, db: Session = Depends(get_db)):
+    dbcliente = db.query(Cliente).filter(Cliente.id==id).first()
+    if not dbcliente:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    else:
+        dbcliente.nombre = cliente_update.name
+        dbcliente.lastname = cliente_update.lastname
+        dbcliente.address = cliente_update.address
+        dbcliente.phone = cliente_update.phone
+        dbcliente.email = cliente_update.email
+        db.commit()
+        return "Se ha actualizado los datos del cliente correctamente"
 
 @app.delete("/deleteCliente", tags=["Cliente"])
-def delete_clientes(email: str):
-    for cliente in clientes:
-        if cliente.email == email:
-            clientes.remove(cliente)
-            return "Se ha borrado existosamente"
-    return "No se ha encontrado el cliente"
+def delete_clientes(id: int, db: Session = Depends(get_db)):
+    dbcliente = db.query(Cliente).filter(Cliente.id==id).first()
+    if not dbcliente:
+         raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    else:
+        db.delete(dbcliente)
+        db.commit()
+        return "Se ha borrado existosamente"
 
+# PROTEINAS
 
-# proteinas
 @app.post("/crearProteinas", tags= ["Proteinas"] )
-async def crearProteinas(proteinas2: Proteinas2, SessionLocal: Session = Depends(get_db)):
-    proteina=Proteina(nombre=proteinas2.nombre, avaliable=proteinas2.avaliable)
-    SessionLocal.add(proteina)
-    SessionLocal.commit()
+def crearProteinas(proteinas: ProteinasC, db: Session = Depends(get_db)):
+    proteina=Proteina(nombre=proteinas.nombre, avaliable=proteinas.avaliable)
+    db.add(proteina)
+    db.commit()
     return {"mensaje": "proteina agregado correctamente"}
 
-@app.get("/Proteina", tags=["Proteinas"])
-def obtenerProteina():
-    return {"Proteina" : Proteinas}
+@app.get("/ProteinaList", tags=["Proteinas"])
+def obtenerProteina(db: Session = Depends(get_db)):
+    get = db.query(Proteina).all()
+    if not get:
+        raise HTTPException(status_code=404, detail="Proteinas no encontradas")
+    else:
+        return get
 
 @app.get("/proteinaID" , tags=["Proteinas"])
-def obtener_proteina(id: int):
-    for proteina in Proteinas:
-        if proteina.id_Proteina == id:
-            return {"mensaje": "proteina encontrada" , "proteina" :
-                     proteina}
+def obtener_proteina(id: int, db: Session = Depends(get_db)):
+    get = db.query(Proteina).filter(Proteina.id == id).first()
+    if not get:
+        raise HTTPException(status_code=404, detail="Proteina no encontrada")
+    else:
+        return get
         
 @app.put("/proteinaID", tags=["Proteinas"])
-def actualizarProteinas(id:int, nueva_proteina:Proteina):
-    for proteina in Proteinas:
-        if proteina.id_Proteina == id:
-            proteina.nom_Proteina = nueva_proteina.nom_Proteina
-            proteina.disponibilidad = nueva_proteina.disponibilidad
-            return {"mensaje": "proteina actualizada correctamente", "proteina": proteina}
-    return {"mensaje": "proteina no encontrada"}
+def actualizarProteinas(id:int, nueva_proteina:ProteinasC, db: Session = Depends(get_db)):
+    get = db.query(Proteina).filter(Proteina.id == id).first()
+    if not get:
+        raise HTTPException(status_code=404, detail="Proteina no encontrada")
+    else:
+        get.nombre = nueva_proteina.nombre
+        get.avaliable = nueva_proteina.avaliable
+        db.commit()
+        return {"mensaje": "proteina actualizada correctamente", "proteina": nueva_proteina}
 
 @app.delete("/proteinaID", tags=["Proteinas"])
-def eliminar_proteina(id: int):
-    for proteina in Proteinas:
-        if proteina.id_Proteina == id:
-            Proteinas.remove(proteina)
-            return {"mensaje": "proteina eliminada correctamente"}
-    return {"mensaje": "proteina no encontrada"}
+def eliminar_proteina(id: int, db: Session = Depends(get_db)):
+    get = db.query(Proteina).filter(Proteina.id == id).first()
+    if not get:
+        raise HTTPException(status_code=404, detail="Proteina no encontrada")
+    else:
+        db.delete(get)
+        db.commit()
+        return {"mensaje": "proteina eliminada correctamente"}
 
-## tipo de almuerzo
-tipo_almuerzos = []
+# Tipo de almuerzo
 
 @app.post("/crearTipoAlmuerzo", tags=["TipoAlmuerzo"])
-def crear_tipo_almuerzo(tipo_almuerzo: TipoAlmuerzo):
-    tipo_almuerzos.append(tipo_almuerzo)
+def crear_tipo_almuerzo(tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
+    almuerzodb = Almuerzo(nombre=tipo_almuerzo.nombre, precio=tipo_almuerzo.precio )
+    db.add(almuerzodb)
+    db.commit()
     return {"mensaje": "Tipo de almuerzo agregado correctamente"}
 
 @app.get("/tipoAlmuerzo", tags=["TipoAlmuerzo"])
-def obtener_tipo_almuerzo():
-    return {"TipoAlmuerzo": tipo_almuerzos}
+def obtener_tipo_almuerzo(db: Session = Depends(get_db)):
+    almuerzos = db.query(Almuerzo).all()
+    if not almuerzos:
+        raise HTTPException(status_code=404, detail="Almuerzos no encontrados")
+    else:
+        return almuerzos
 
 @app.get("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
-def obtener_tipo_almuerzo_id(id: int):
-    for tipo_almuerzo in tipo_almuerzos:
-        if tipo_almuerzo.id_tipo_almuerzo == id:
-            return {"mensaje": "Tipo de almuerzo encontrado", "tipo_almuerzo": tipo_almuerzo}
-    return {"mensaje": "Tipo de almuerzo no encontrado"}
-
+def obtener_tipo_almuerzo_id(id: int, db: Session=Depends(get_db)):
+    almuerzos = db.query(Almuerzo).filter(Almuerzo.id==id).first()
+    if not almuerzos:
+        raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
+    else:
+        return almuerzos
+    
 @app.put("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
-def actualizar_tipo_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzo):
-    for tipo_almuerzo in tipo_almuerzos:
-        if tipo_almuerzo.id_tipo_almuerzo == id:
-            tipo_almuerzo.nom_tipo_almuerzo = nuevo_tipo_almuerzo.nom_tipo_almuerzo
-            tipo_almuerzo.precio = nuevo_tipo_almuerzo.precio
-            return {"mensaje": "Tipo de almuerzo actualizado correctamente", "tipo_almuerzo": tipo_almuerzo}
-    return {"mensaje": "Tipo de almuerzo no encontrado"}
+def actualizar_tipo_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
+    almuerzos = db.query(Almuerzo).filter(Almuerzo.id==id).first()
+    if not almuerzos:
+        raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
+    else:
+        almuerzos.nombre = nuevo_tipo_almuerzo.nombre
+        almuerzos.precio = nuevo_tipo_almuerzo.precio
+        db.commit()
+        return {"mensaje": "Tipo de almuerzo actualizado correctamente"}
+    
 
 @app.delete("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
-def eliminar_tipo_almuerzo(id: int):
-    for tipo_almuerzo in tipo_almuerzos:
-        if tipo_almuerzo.id_tipo_almuerzo == id:
-            tipo_almuerzos.remove(tipo_almuerzo)
-            return {"mensaje": "Tipo de almuerzo eliminado correctamente"}
-    return {"mensaje": "Tipo de almuerzo no encontrado"}
-
+def eliminar_tipo_almuerzo(id: int, db: Session = Depends(get_db)):
+    almuerzos = db.query(Almuerzo).filter(Almuerzo.id==id).first()
+    if not almuerzos:
+        raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
+    else:
+        db.delete(almuerzos)
+        db.commit()
+        return {"mensaje": "Tipo de almuerzo eliminado correctamente"}

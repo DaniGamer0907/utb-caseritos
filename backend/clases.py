@@ -1,17 +1,16 @@
 from pydantic import BaseModel
 
-class Cliente(BaseModel):
+class ClienteC(BaseModel):
     name: str
     lastname: str
     address: str
     phone: str
     email: str
 
-class Proteinas2(BaseModel):
+class ProteinasC(BaseModel):
     nombre : str
     avaliable : int
 
-class TipoAlmuerzo(BaseModel):
-    id_tipo_almuerzo : int
-    nom_tipo_almuerzo : str
+class TipoAlmuerzoC(BaseModel):
+    nombre : str
     precio : float

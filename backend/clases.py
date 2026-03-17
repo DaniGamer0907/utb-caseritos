@@ -1,3 +1,4 @@
+from datetime import date
 from pydantic import BaseModel
 
 class ClienteC(BaseModel):
@@ -17,10 +18,10 @@ class TipoAlmuerzoC(BaseModel):
     
 class AlmuerzoC(BaseModel):
     descripcion: str
-    fecha: str
+    fecha: date
 
 class PedidosC(BaseModel):
-    fecha_creacion: str
+    fecha_creacion: date
     estado: bool
     sugerencia: str
 
@@ -30,7 +31,6 @@ class DetallePedidosC(BaseModel):
     total: float
     
 class pago(BaseModel):
-    id : int
     metodopago: str
     diadelpago: str
     monto: float

@@ -1,5 +1,5 @@
 from fastapi import FastAPI,Depends,HTTPException
-from modelos import Proteina, Cliente, Almuerzo
+from modelos import Proteina, Cliente, TipoAlmuerzo
 from clases import ProteinasC, ClienteC, TipoAlmuerzoC
 from db import get_db
 from sqlalchemy.orm import Session
@@ -105,14 +105,14 @@ def eliminar_proteina(id: int, db: Session = Depends(get_db)):
 
 @app.post("/crearTipoAlmuerzo", tags=["TipoAlmuerzo"])
 def crear_tipo_almuerzo(tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
-    almuerzodb = Almuerzo(nombre=tipo_almuerzo.nombre, precio=tipo_almuerzo.precio )
+    almuerzodb = TipoAlmuerzo(nombre=tipo_almuerzo.nombre, precio=tipo_almuerzo.precio )
     db.add(almuerzodb)
     db.commit()
     return {"mensaje": "Tipo de almuerzo agregado correctamente"}
 
 @app.get("/tipoAlmuerzo", tags=["TipoAlmuerzo"])
 def obtener_tipo_almuerzo(db: Session = Depends(get_db)):
-    almuerzos = db.query(Almuerzo).all()
+    almuerzos = db.query(TipoAlmuerzo).all()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzos no encontrados")
     else:
@@ -120,7 +120,7 @@ def obtener_tipo_almuerzo(db: Session = Depends(get_db)):
 
 @app.get("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
 def obtener_tipo_almuerzo_id(id: int, db: Session=Depends(get_db)):
-    almuerzos = db.query(Almuerzo).filter(Almuerzo.id==id).first()
+    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id==id).first()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
     else:
@@ -128,7 +128,7 @@ def obtener_tipo_almuerzo_id(id: int, db: Session=Depends(get_db)):
     
 @app.put("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
 def actualizar_tipo_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
-    almuerzos = db.query(Almuerzo).filter(Almuerzo.id==id).first()
+    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id==id).first()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
     else:
@@ -140,7 +140,7 @@ def actualizar_tipo_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzoC, db: Se
 
 @app.delete("/tipoAlmuerzoID", tags=["TipoAlmuerzo"])
 def eliminar_tipo_almuerzo(id: int, db: Session = Depends(get_db)):
-    almuerzos = db.query(Almuerzo).filter(Almuerzo.id==id).first()
+    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id==id).first()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
     else:

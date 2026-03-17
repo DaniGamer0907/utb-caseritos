@@ -50,7 +50,7 @@ class DetallePedidos(Base):
     precio_unitario = Column(Float)
     total = Column(Float)
 
-class pago(Base):
+class Pago(Base):
     __tablename__ = "pago"
     id = Column(Integer,primary_key=True)
     pedidoid = Column(Integer, ForeignKey('pedido.id'))

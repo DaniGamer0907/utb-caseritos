@@ -20,7 +20,7 @@ class AlmuerzoC(BaseModel):
     descripcion: str
     fecha: date
 
-class PedidosC(BaseModel):
+class PedidoC(BaseModel):
     fecha_creacion: date
     estado: bool
     sugerencia: str
@@ -30,7 +30,7 @@ class DetallePedidosC(BaseModel):
     precio_unitario: float
     total: float
     
-class pago(BaseModel):
+class PagoC(BaseModel):
     metodopago: str
-    diadelpago: str
+    diadelpago: date
     monto: float

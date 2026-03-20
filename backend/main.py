@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from models.base import Base
 from db import engine
 
+from models.Roles import Rol
 from routes.Usuario_routes import router as usuario_router
 from routes.Proteina_routes import router as proteina_router
 from routes.TipoAlmuerzo_routes import router as tipo_almuerzo_router

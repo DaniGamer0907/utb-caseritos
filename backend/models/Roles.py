@@ -1,10 +1,11 @@
-from sqlalchemy import Column,String
+from sqlalchemy import Column,String,Integer
 from models.base import Base
 from sqlalchemy.orm import relationship
 
-class Roles(Base):
-    __tablename__ = "roles"
+class Rol(Base):
+    __tablename__ = "rol"
+    id = Column(Integer, primary_key=True)
     nombre = Column(String)
 
     #Relacion con Usuario
-    usuario= relationship("Usuario", back_populates= "roles")
+    usuario= relationship("Usuario", back_populates= "rol")

@@ -8,9 +8,9 @@ class Pedido(Base):
     fecha_creacion = Column(Date)
     estado = Column(Boolean)
     sugerencia = Column(String)
-    cliente_id = Column(Integer,ForeignKey('cliente.id'))
+    usuario_id = Column(Integer,ForeignKey('usuario.id'))
 
     #relaciones
-    cliente = relationship("Cliente", back_populates= "pedido")
+    usuario = relationship("Usuario", back_populates= "pedido")
     pago = relationship("Pago", back_populates= "pedido")
     detalle_pedido = relationship("DetallePedido", back_populates= "pedido")

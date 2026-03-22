@@ -14,4 +14,4 @@ class Usuario(Base):
 
     #relaciones
     pedido= relationship("Pedido", back_populates= "usuario")
-
+    roles = relationship("Roles", back_populates="usuario")

@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from models.base import Base
 from db import engine
 
-from models.Roles import Rol
+from models.Rol import Rol
+from routes.auth import router as auth_router
 from routes.Usuario_routes import router as usuario_router
 from routes.Proteina_routes import router as proteina_router
 from routes.TipoAlmuerzo_routes import router as tipo_almuerzo_router
@@ -17,6 +18,7 @@ app = FastAPI(title="API Caseritos")
 Base.metadata.create_all(bind=engine)
 
 
+app.include_router(auth_router)
 app.include_router(usuario_router)
 app.include_router(proteina_router)
 app.include_router(tipo_almuerzo_router)

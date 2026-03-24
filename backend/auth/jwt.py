@@ -1,20 +1,20 @@
 from datetime import datetime, timedelta,UTC
 from jose import JWTError, jwt
+from dotenv import load_dotenv
+from os import getenv
 
-SECRET_KEY = 'ALW739362-2732jdkwllanq@jsndksdkeow0p2+30281'
-ALGORITHM = 'HS256'
-EXPIRE_MINUTES = 60
+load_dotenv()
 
 def create_access_token(user:str, role:str) -> str:
     payload = {
         "sub": user,
         "role": role,
-        "exp": datetime.now(UTC) + timedelta(minutes=EXPIRE_MINUTES)
+        "exp": datetime.now(UTC) + timedelta(minutes=int(getenv("EXPIRE_MINUTES")))
     }
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(payload, getenv("SECRET_KEY"), algorithm=getenv("ALGORITHM"))
 
 def decode_access_token(token: str) -> dict | None:
     try:
-        return jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
+        return jwt.decode(token,getenv("SECRET_KEY"),algorithms=[getenv("ALGORITHM")])
     except JWTError:
         return None

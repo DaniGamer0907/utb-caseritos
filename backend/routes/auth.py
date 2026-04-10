@@ -3,15 +3,16 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.Usuario import Usuario
 from schemas.Usuario_schemas import UsuarioC
-from schemas.schemas import token,loginRequest
+from schemas.schemas import token
 from auth.hashing import verify_password, hash_password
 from auth.jwt import create_access_token
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/login", response_model=token)
-def login(data: loginRequest, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.email == data.email).first()
+def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.email == data.username).first()
     
     if not usuario or not verify_password(data.password, usuario.password):
         raise HTTPException(status_code=401, detail="Credenciales incorrectas")

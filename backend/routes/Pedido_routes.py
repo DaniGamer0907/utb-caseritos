@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.Pedido import Pedido
 from schemas.Pedido_schemas import PedidoC
-from auth.dependencies import solo_admin, solo_cliente
 
 router= APIRouter(prefix="/pedido", tags=["Pedidos"])
 

@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.DetallePedido import DetallePedido
 from schemas.DetallePedido_schemas import DetallePedidoC
-from auth.dependencies import solo_admin, solo_cliente
 
 router= APIRouter(prefix="/detallesPedido", tags= ["Detalles de Pedidos"])
 

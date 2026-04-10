@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.Pago import Pago
 from schemas.Pago_schemas import PagoC
-from auth.dependencies import solo_admin, solo_cliente
 
 router= APIRouter(prefix="/Pago", tags= ["Pagos"])  
 

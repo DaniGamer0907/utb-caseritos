@@ -24,7 +24,7 @@ def get_current_user(
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-    return {"user": usuario, "role": role}
+    return role
 
 
 def solo_admin(current=Depends(get_current_user)):

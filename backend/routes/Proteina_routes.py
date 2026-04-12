@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.Proteina import Proteina
 from schemas.Proteina_schemas import ProteinaC
+from auth.dependencies import solo_admin, solo_cliente
 
 router= APIRouter(prefix="/proteina", tags= ["Proteinas"])
 

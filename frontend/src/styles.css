@@ -1,0 +1,13 @@
+/* ===== FONDO DE LA PÁGINA (imagen de la mesa de madera) ===== */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('/assets/Fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Lato', sans-serif;
+}

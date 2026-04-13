@@ -1,20 +1,6 @@
-/* ===== FONDO DE LA PÁGINA (imagen de la mesa de madera) ===== */
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background-image: url('fondo.jpg');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Lato', sans-serif;
-}
-
 /* ===== TARJETA (imagen del tablero de madera) ===== */
 .tarjeta {
-    background-image: url('tablero.png');
+    background-image: url('/assets/tablero.png');
     background-size: 100% 100%;
     border-radius: 20px;
     padding: 30px 50px 40px;

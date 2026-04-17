@@ -1,15 +1,24 @@
 <main>
     <div class="registro-suave">
-        <form>
+        <form (submit)="onRegistro()">
             <h1>Registro</h1>
             <br>
-            <input class="campo" type="text" placeholder="John Doe">
+            <input class="campo" type="text" placeholder="John" [(ngModel)]="usuario.name" name="name" >
             <br>
-            <input class="campo" type="email" placeholder="JohnDoe@gmail.com">
             <br>
-            <input class="campo" type="password" placeholder="*****">
+            <input class="campo" type="text" placeholder="Doe" [(ngModel)]="usuario.lastname" name="lastname" >
             <br>
-            <button class="entrar" type="button">Mandar</button>
+            <br>
+            <input class="campo" type="text" placeholder="olaya" [(ngModel)]="usuario.address" name="address" >
+            <br>
+            <br>
+            <input class="campo" type="text" placeholder="123" [(ngModel)]="usuario.phone" name="phone" >
+            <br>
+            <input class="campo" type="email" placeholder="JohnDoe@gmail.com" [(ngModel)]="usuario.email"name="email">
+            <br>
+            <input class="campo" type="password" placeholder="*****" [(ngModel)]="usuario.password" name="password">
+            <br>
+            <button class="entrar" type="submit">Mandar</button>
             <br>
             <a routerLink="">¿Ya tienes cuenta?</a>
         </form>

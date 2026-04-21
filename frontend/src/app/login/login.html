@@ -8,14 +8,16 @@
         <br>
 
         <!-- Formulario -->
-        <h2 class="titulo-form">Ingresar a mi Cuenta</h2>
+         <form (submit)="onLogin()">
+            <h2 class="titulo-form">Ingresar a mi Cuenta</h2>
 
-        <input type="email" placeholder="Correo Electrónico" class="campo">
-        <input type="password" placeholder="Contraseña" class="campo">
+            <input type="email" placeholder="Correo Electrónico" class="campo" [(ngModel)]="email" name="email">
+            <input type="password" placeholder="Contraseña" class="campo" [(ngModel)]="password" name="password">
 
-        <a href="#" class="olvide">Olvidé mi contraseña</a>
+            <a href="#" class="olvide">Olvidé mi contraseña</a>
 
-        <button class="boton-entrar" routerLink="home">ENTRAR</button>
+            <button class="boton-entrar" type="submit">ENTRAR</button>
+        </form>
 
         <p class="registro">
             ¿No tienes cuenta? <a routerLink="Registrar">Regístrate aquí</a>

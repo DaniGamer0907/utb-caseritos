@@ -21,7 +21,11 @@ export class Login {
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('role', res.role);
         console.log('¡Adentro!', res.role);
-        this.router.navigate(['/admin'])
+        if (res.role==="admin"){
+          this.router.navigate(['/admin'])
+        }else{
+          this.router.navigate(['/home'])
+        }
       },
       error: (err) => alert('Error: ' + err.error.detail)
     });

@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class TipoAlmuerzoC(BaseModel):
     nombre : str
+    descripcion: str
     precio : float
 
 class TipoAlmuerzoCreate(TipoAlmuerzoC):

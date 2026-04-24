@@ -20,7 +20,6 @@ export class Registrar {
   };
   authService: AuthService = inject(AuthService);
   onRegistro(){
-    console.log("hola1")
     this.authService.registro(this.usuario).subscribe({
       next: (res: any) => {
         alert(res.message); // "Usuario registrado correctamente"
@@ -30,6 +29,5 @@ export class Registrar {
         alert('Error: ' + err.error.detail);
       }
     });
-    console.log("hola2")
   }
 }

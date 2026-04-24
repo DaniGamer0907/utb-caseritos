@@ -1,59 +1,174 @@
-# Frontend
+# UTB Caseritos
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Aplicacion web para gestionar y promocionar el restaurante **Caseritos**. El proyecto esta dividido en un frontend en Angular y un backend en FastAPI con autenticacion JWT y persistencia en PostgreSQL.
 
-## Development server
+## Arquitectura
 
-To start a local development server, run:
+- `frontend/`: interfaz web en Angular 21.
+- `backend/`: API REST en FastAPI.
+- `backend/models/`: modelos SQLAlchemy.
+- `backend/routes/`: rutas para autenticacion y CRUD del sistema.
+- `backend/schemas/`: esquemas Pydantic para validacion de datos.
 
-```bash
-ng serve
+## Funcionalidades actuales
+
+- Inicio de sesion con JWT.
+- Registro de usuarios.
+- Vista publica tipo landing page para el restaurante.
+- CRUD base para usuarios, proteinas, tipos de almuerzo, almuerzos, pedidos, detalles de pedido y pagos.
+- Validaciones de acceso por rol en algunas rutas del backend.
+
+## Tecnologias
+
+### Frontend
+
+- Angular 21
+- TypeScript
+- Bootstrap 5
+
+### Backend
+
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Passlib
+- Python-Jose
+- Python-Dotenv
+
+## Requisitos
+
+- Node.js y npm
+- Python 3.10 o superior
+- PostgreSQL
+
+## Variables de entorno del backend
+
+El backend depende de un archivo `.env` dentro de `backend/` o de variables de entorno equivalentes.
+
+```env
+DB_USER=tu_usuario
+DB_PASSWORD=tu_password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=tu_base_de_datos
+SECRET_KEY=una_clave_secreta
+ALGORITHM=HS256
+EXPIRE_MINUTES=60
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Instalacion
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 1. Frontend
 
 ```bash
-ng generate component component-name
+cd frontend
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 2. Backend
+
+Las dependencias Python del backend estan definidas en `requirements.txt` en la raiz del proyecto.
 
 ```bash
-ng generate --help
+python -m pip install -r requirements.txt
 ```
 
-## Building
+Opcionalmente, puedes crear y activar un entorno virtual antes de instalar dependencias.
 
-To build the project run:
+## Ejecucion en desarrollo
+
+### Backend
+
+Desde la carpeta `backend/`:
 
 ```bash
-ng build
+uvicorn main:app --reload
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+La API queda disponible en:
 
-## Running unit tests
+- `http://localhost:8000/`
+- `http://localhost:8000/docs`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Frontend
+
+Desde la carpeta `frontend/`:
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+La aplicacion queda disponible en:
 
-For end-to-end (e2e) testing, run:
+- `http://localhost:4200/`
 
-```bash
-ng e2e
+## Integracion frontend-backend
+
+- El frontend consume autenticacion en `http://localhost:8000/auth`.
+- El backend permite CORS para `http://localhost:4200`.
+- Si cambias puertos o dominios, debes actualizar ambos lados.
+
+## Rutas principales del frontend
+
+- `/`: login
+- `/Registrar`: registro de usuario
+- `/home`: pagina principal del restaurante
+
+## Rutas principales del backend
+
+### Autenticacion
+
+- `POST /auth/login`
+- `POST /auth/registro`
+
+### Modulos CRUD
+
+- `/usuario`
+- `/proteina`
+- `/tipoalmuerzo`
+- `/almuerzo`
+- `/pedido`
+- `/detallesPedido`
+- `/Pago`
+
+## Modelo de dominio
+
+Las entidades principales del sistema son:
+
+- `Usuario`
+- `Rol`
+- `Proteina`
+- `TipoAlmuerzo`
+- `Almuerzo`
+- `Pedido`
+- `DetallePedido`
+- `Pago`
+
+## Notas importantes
+
+- Las tablas se crean automaticamente al iniciar el backend con `Base.metadata.create_all(bind=engine)`.
+- La ruta raiz del backend responde con `{"message": "API funcionando"}`.
+- El login espera credenciales en formato `application/x-www-form-urlencoded`.
+- El proyecto contiene algunos textos con problemas de codificacion en la interfaz y en respuestas del backend; no afecta este README, pero conviene corregirlo despues.
+
+## Estructura del proyecto
+
+```text
+utb-caseritos/
+|-- backend/
+|   |-- auth/
+|   |-- models/
+|   |-- routes/
+|   |-- schemas/
+|   |-- db.py
+|   `-- main.py
+|-- frontend/
+|   |-- src/
+|   |-- angular.json
+|   `-- package.json
+`-- README.md
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Estado actual
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+El repositorio ya tiene la base funcional para autenticacion, gestion de usuarios y administracion de almuerzos y pedidos, pero todavia requiere estandarizar dependencias, mejorar validaciones y completar documentacion tecnica mas detallada si se va a desplegar o mantener en equipo.

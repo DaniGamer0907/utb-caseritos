@@ -149,11 +149,9 @@
 }
 
 .section-heading p {
-  color: black;
+  color: rgb(255, 255, 255);
+  background-color: #2a4929;
   border-radius: 10px;
-  text-decoration: overline;
-  font-size: larger;
-  font-family: 'Playfair Display', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 /* Grid */
@@ -247,11 +245,6 @@ html, body {
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.container{
-  background-color:  #F4EDE4;
-  border-radius: 20px;
-  padding: 10px;
-}
 
 /* ========================
    RESPONSIVE

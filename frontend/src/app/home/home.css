@@ -25,24 +25,25 @@
   background: #efe7dc;
   color: #6d5a4d;
   font-size: 0.9rem;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* Logo cuadrado */
 .hero-mark {
-  width: 64px;
-  height: 64px;
+  width: 300px; /* ajusta tamaño del logo */
   margin: 0 auto 20px;
-  border-radius: 50px;
-  background: #355a34;
-  color: #fff;
+  background: transparent; /* quitamos el círculo */
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
-  font-weight: bold;
-  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  align-items: center;
+  box-shadow: none; /* opcional */
+}
+
+.hero-mark img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 /* TÍTULO PRO */

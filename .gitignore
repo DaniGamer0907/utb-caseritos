@@ -14,25 +14,3 @@ env/
 
 # Base de datos
 *.sqlite3
-backend/routes/auth.py
-backend/routes/auth.py
-backend/schemas/Login_schema.py
-frontend/src/app/auth-service.ts
-frontend/src/app/admin/admin.css
-frontend/src/app/admin/admin.html
-frontend/src/app/admin/admin.routes.ts
-frontend/src/app/admin/admin.spec.ts
-frontend/src/app/admin/admin.ts
-frontend/src/app/cart-sidebar/cart-sidebar.css
-frontend/src/app/cart-sidebar/cart-sidebar.html
-frontend/src/app/cart-sidebar/cart-sidebar.spec.ts
-frontend/src/app/cart-sidebar/cart-sidebar.ts
-frontend/src/app/login/login.ts
-frontend/src/app/services/services.spec.ts
-frontend/src/app/services/services.ts
-frontend/src/app/services/auth/autenticacion.spec.ts
-frontend/src/app/services/auth/autenticacion.ts
-backend/routes/auth.py
-frontend/src/app/auth-service.ts
-frontend/src/app/login/login.ts
-frontend/src/app/login/login.ts

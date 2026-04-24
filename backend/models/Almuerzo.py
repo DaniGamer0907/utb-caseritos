@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship
 class Almuerzo(Base):
     __tablename__ = "almuerzo"
     id = Column(Integer,primary_key=True)
-    descripcion = Column(String)
     fecha = Column(Date)
     proteinaid = Column(Integer, ForeignKey('proteina.id'))
     tipalmuerzo = Column(Integer,ForeignKey('tipoalmuerzo.id'))

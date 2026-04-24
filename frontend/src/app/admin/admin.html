@@ -1,0 +1,177 @@
+<div class="admin-wrapper">
+
+  <!-- Main content -->
+  <main class="main-content">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Dashboard</h1>
+        <span class="page-date">Jueves, 24 de abril 2025</span>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" placeholder="Buscar pedidos, clientes...">
+        </div>
+        <button class="notif-btn">
+          <span>🔔</span>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="new-order-btn">+ Nuevo Pedido</button>
+      </div>
+    </header>
+
+    <!-- Stat cards -->
+    <section class="stats-grid">
+      <div class="stat-card stat-total">
+        <div class="stat-label">Total Pedidos</div>
+        <div class="stat-value">8</div>
+        <div class="stat-sub">Hoy</div>
+        <div class="stat-icon">📋</div>
+      </div>
+      <div class="stat-card stat-prep">
+        <div class="stat-label">En Preparación</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">Activos</div>
+        <div class="stat-icon">⏳</div>
+      </div>
+      <div class="stat-card stat-done">
+        <div class="stat-label">Entregados</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">Completados hoy</div>
+        <div class="stat-icon">✅</div>
+      </div>
+    </section>
+
+    <!-- Pedidos section -->
+    <section class="orders-section">
+      <div class="section-header">
+        <!-- <h2>Pedidos</h2> -->
+        <div class="tab-group">
+          <button class="tab active">Todos</button>
+          <button class="tab">Pendientes <span class="tab-count">2</span></button>
+          <button class="tab">En Preparación <span class="tab-count">2</span></button>
+          <button class="tab">Listos <span class="tab-count">2</span></button>
+          <button class="tab">Entregados <span class="tab-count">2</span></button>
+        </div>
+      </div>
+
+      <div class="orders-grid">
+
+        <!-- Card 1 -->
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-avatar">MG</div>
+            <div class="order-client">
+              <span class="client-name">María García</span>
+              <span class="order-num">#001</span>
+            </div>
+            <span class="status-badge status-pending">Pendiente</span>
+          </div>
+          <div class="order-location">
+            <span class="loc-icon">⊞</span> Mesa 5
+          </div>
+          <div class="order-items">
+            <div class="item-row">
+              <span>1x Bandeja Paisa</span>
+              <span>$28.000</span>
+            </div>
+            <div class="item-row">
+              <span>2x Jugo de Lulo</span>
+              <span>$10.000</span>
+            </div>
+          </div>
+          <div class="order-note">Nota: Sin aguacate por favor</div>
+          <div class="order-footer">
+            <div class="order-total">
+              <span class="total-label">Total</span>
+              <span class="total-amount">$38.000</span>
+            </div>
+            <div class="order-actions">
+              <button class="btn-primary">Preparar</button>
+              <button class="btn-ghost">Ver Detalles</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-avatar av-orange">CR</div>
+            <div class="order-client">
+              <span class="client-name">Carlos Rodríguez</span>
+              <span class="order-num">#002</span>
+            </div>
+            <span class="status-badge status-prep">En Preparación</span>
+          </div>
+          <div class="order-location">
+            <span class="loc-icon">📍</span> Calle 85 #15-30, Apto 502
+          </div>
+          <div class="order-items">
+            <div class="item-row">
+              <span>2x Ajiaco Santafereño</span>
+              <span>$50.000</span>
+            </div>
+            <div class="item-row">
+              <span>2x Aguapanela con Limón</span>
+              <span>$8.000</span>
+            </div>
+          </div>
+          <div class="order-timer">⏱ ~15 min restantes</div>
+          <div class="order-footer">
+            <div class="order-total">
+              <span class="total-label">Total</span>
+              <span class="total-amount">$58.000</span>
+            </div>
+            <div class="order-actions">
+              <button class="btn-primary">Listo</button>
+              <button class="btn-ghost">Ver Detalles</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-avatar av-green">AM</div>
+            <div class="order-client">
+              <span class="client-name">Ana Martínez</span>
+              <span class="order-num">#003</span>
+            </div>
+            <span class="status-badge status-ready">Listo</span>
+          </div>
+          <div class="order-location">
+            <span class="loc-icon">⊞</span> Mesa 3
+          </div>
+          <div class="order-items">
+            <div class="item-row">
+              <span>1x Sancocho de Gallina</span>
+              <span>$22.000</span>
+            </div>
+            <div class="item-row">
+              <span>1x Arroz con Pollo</span>
+              <span>$20.000</span>
+            </div>
+            <div class="item-row">
+              <span>2x Limonada Natural</span>
+              <span>$9.000</span>
+            </div>
+          </div>
+          <div class="order-footer">
+            <div class="order-total">
+              <span class="total-label">Total</span>
+              <span class="total-amount">$51.000</span>
+            </div>
+            <div class="order-actions">
+              <button class="btn-primary">Entregar</button>
+              <button class="btn-ghost">Ver Detalles</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>

@@ -5,6 +5,7 @@ import { Observable, forkJoin, map } from 'rxjs';
 interface TipoAlmuerzoApi {
   id: number;
   nombre: string;
+  descripcion: string;
   precio: number;
 }
 
@@ -49,16 +50,12 @@ export class HomeMenuService {
           id: String(tipo.id),
           apiId: tipo.id,
           name: tipo.nombre,
-          description: this.buildDescription(tipo.nombre),
+          description: tipo.descripcion,
           price: tipo.precio,
           image: this.defaultImage,
           proteins: availableProteins,
         }));
       })
     );
-  }
-
-  private buildDescription(nombre: string): string {
-    return `${nombre}. ${this.defaultDescription}`;
   }
 }

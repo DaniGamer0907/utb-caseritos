@@ -6,6 +6,7 @@ class TipoAlmuerzo(Base):
     __tablename__ = "tipoalmuerzo"
     id = Column(Integer,primary_key=True)
     nombre = Column(String)
+    descripcion = Column(String)
     precio = Column(Float)
 
     #relaciones

@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../auth-service';
 import { FormsModule } from '@angular/forms';
-import { Autenticacion } from '../services/auth/autenticacion';
 @Component({
   selector: 'app-login',
   imports: [RouterModule, FormsModule],
@@ -22,7 +21,11 @@ export class Login {
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('role', res.role);
         console.log('¡Adentro!', res.role);
-        this.router.navigate(['/admin'])
+        if (res.role==="admin"){
+          this.router.navigate(['/admin'])
+        }else{
+          this.router.navigate(['/home'])
+        }
       },
       error: (err) => alert('Error: ' + err.error.detail)
     });

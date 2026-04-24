@@ -9,7 +9,7 @@ router= APIRouter(prefix="/tipoalmuerzo", tags=["Tipo de Almuerzos"])
 
 @router.post("/crearTipoAlmuerzo")
 def crear_tipo_de_almuerzo(tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
-    almuerzodb = TipoAlmuerzo(nombre=tipo_almuerzo.nombre, precio=tipo_almuerzo.precio )
+    almuerzodb = TipoAlmuerzo(nombre=tipo_almuerzo.nombre, precio=tipo_almuerzo.precio, descripcion=tipo_almuerzo.descripcion )
     db.add(almuerzodb)
     db.commit()
     return {"mensaje": "Tipo de almuerzo agregado correctamente"}

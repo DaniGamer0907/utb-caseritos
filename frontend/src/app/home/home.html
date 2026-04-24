@@ -1,71 +1,100 @@
-<!-- home.component.html -->
+<section class="hero-section">
+  <div class="hero-glow hero-glow-right"></div>
+  <div class="hero-glow hero-glow-left"></div>
+  <div class="container hero-content">
+    <div class="hero-badge">Restaurante casero colombiano</div>
+    <div class="hero-mark">C</div>
+    <h1>Bienvenidos a <span>{{ store.brand }}</span></h1>
+    <p class="parrafo">
+      Deliciosos almuerzos caseros con sabor de hogar. Arroz, lentejas, ensalada,
+      patacon y las mejores proteinas en una sola experiencia.
+    </p>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="navbar-logo">🏠 Caseritos</div>
-  <ul class="navbar-links">
-    <li><a href="#">Inicio</a></li>
-    <li><a href="#">Menú</a></li>
-    <li><a href="#">Contacto</a></li>
-  </ul>
-</nav>
+    <div class="hero-actions">
+      <button class="button button-primary button-large" type="button" (click)="scrollToMenu()">
+        Ver menu
+      </button>
+      <button class="button button-outline button-large" type="button" (click)="store.openWhatsApp()">
+        Contactanos
+      </button>
+    </div>
 
-<!-- HERO / BANNER -->
-<section class="hero">
-  <div class="hero-content">
-    <h1 class="hero-title">Caseritos</h1>
-    <p class="hero-subtitle">Restaurante te ofrece</p>
-    <p class="hero-descripcion">Comida casera con sabor a hogar 🍽️</p>
-    <a href="https://wa.me/573016221347" class="btn-whatsapp" target="_blank">
-      📲 Pedir por WhatsApp
-    </a>
+    <div class="trust-row">
+      <span>Ingredientes frescos</span>
+      <span>Comida casera</span>
+      <span>Pedidos por WhatsApp</span>
+    </div>
   </div>
 </section>
 
-<!-- SECCIÓN ALMUERZOS -->
-<section class="almuerzos">
-  <h2 class="seccion-titulo">🍱 Nuestros Almuerzos</h2>
-  <p class="seccion-subtitulo">Arroz + lentejas + ensalada + patacón + jugo</p>
-
-  <div class="cards-container">
-
-    <!-- Card Seco -->
-    <div class="card">
-      <div class="card-badge">$13.000</div>
-      <h3 class="card-titulo">Almuerzo Seco</h3>
-      <p class="card-descripcion">El clásico completo con todo incluido.</p>
-      <ul class="card-proteinas">
-        <li>🥩 Cerdo asado</li>
-        <li>🍗 Pechuga bechamel</li>
-        <li>🍖 Cerdo BBQ</li>
-      </ul>
+<section class="menu-section" id="menu">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Nuestro Menu</h2>
+      <p>Elige tu almuerzo favorito con la proteina de tu preferencia.</p>
     </div>
 
-    <!-- Card Corriente -->
-    <div class="card card-destacado">
-      <div class="card-badge">$16.000</div>
-      <h3 class="card-titulo">Almuerzo Corriente</h3>
-      <p class="card-descripcion">Con sopa o caldo para entrar en calor.</p>
-      <ul class="card-proteinas">
-        <li>🥩 Cerdo asado</li>
-        <li>🍗 Pechuga bechamel</li>
-        <li>🍖 Cerdo BBQ</li>
-      </ul>
-    </div>
+    <div class="content-grid">
+      <div class="menu-grid">
+        @for (item of store.menuItems; track item.id) {
+          <article class="menu-card">
+            <div class="image-wrap">
+              <img [src]="item.image" [alt]="item.name" loading="lazy" />
+              <span class="price-tag">{{ store.formatPrice(item.price) }}</span>
+            </div>
 
+            <div class="menu-card-body">
+              <div>
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.description }}</p>
+              </div>
+
+              <div class="protein-group">
+                <span>Elige tu proteina:</span>
+                <div class="protein-options">
+                  @for (protein of item.proteins; track protein) {
+                    <button
+                      class="protein-option"
+                      type="button"
+                      [class.active]="selectedProteins()[item.id] === protein"
+                      (click)="setProtein(item.id, protein)"
+                    >
+                      {{ protein }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <button
+                class="button button-primary button-block"
+                type="button"
+              >
+                <!-- {{ addedStates()[item.id] ? 'Agregado' : 'Agregar al pedido' }} -->
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- <app-cart-sidebar /> -->
+    </div>
   </div>
 </section>
 
-<!-- SECCIÓN CONTACTO -->
-<section class="contacto">
-  <h2 class="seccion-titulo">📞 ¡Pide Ya!</h2>
-  <p>Escríbenos al WhatsApp y recibe tu almuerzo</p>
-  <a href="https://wa.me/573016221347" class="btn-whatsapp" target="_blank">
-    💬 3016221347
-  </a>
-</section>
+<section class="features-section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Por que elegirnos</h2>
+    </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <p>© 2026 Caseritos Restaurante · Hecho con ❤️</p>
-</footer>
+    <div class="feature-grid">
+      @for (feature of store.featureCards; track feature.title) {
+        <article class="feature-card">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.text }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>

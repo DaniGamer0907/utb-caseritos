@@ -1,203 +1,257 @@
-/* home.component.css */
-
 /* ========================
-   NAVBAR
-   — fondo oscuro semi-transparente
+   HERO — LOOK MODERNO
    ======================== */
-.navbar {
-  background-color: rgba(74, 44, 10, 0.88);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 32px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
 
-.navbar-logo {
-  color: #f5c842;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.navbar-links {
-  list-style: none;
-  display: flex;
-  gap: 24px;
-}
-
-.navbar-links a {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 1rem;
-}
-
-.navbar-links a:hover {
-  color: #f5c842;
-}
-
-/* ========================
-   HERO / BANNER
-   ======================== */
-.hero {
+.hero-section {
+  padding: 25px 25px 25px;
   text-align: center;
-  padding: 80px 20px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-color:hsl(34, 42%, 93%);
+  width: 65em;
+  margin-top: 30px;
 }
 
 .hero-content {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+/* Badge */
+.hero-badge {
   display: inline-block;
-  background-color: rgba(74, 44, 10, 0.75);
-  padding: 48px 60px;
-  border-radius: 16px;
-  border: 2px solid rgba(200, 146, 42, 0.6);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #efe7dc;
+  color: #6d5a4d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.hero-title {
-  font-size: 3.5rem;
-  color: #f5c842;
-  margin-bottom: 8px;
-  font-family: 'Georgia', serif;
-}
-
-.hero-subtitle {
-  font-size: 1.3rem;
-  color: #fdf3e3;
-  margin-bottom: 12px;
-  font-style: italic;
-}
-
-.hero-descripcion {
-  font-size: 1.1rem;
-  color: #ffffff;
-  margin-bottom: 28px;
-}
-
-/* ========================
-   BOTÓN WHATSAPP
-   ======================== */
-.btn-whatsapp {
-  background-color: #25d366;
-  color: #ffffff;
-  padding: 14px 28px;
-  border-radius: 30px;
-  text-decoration: none;
-  font-size: 1.1rem;
+/* Logo cuadrado */
+.hero-mark {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50px;
+  background: #355a34;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
   font-weight: bold;
-  display: inline-block;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.btn-whatsapp:hover {
-  background-color: #1ebe5d;
+/* TÍTULO PRO */
+.hero-content h1 {
+  font-family: 'Playfair Display', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: clamp(2.8rem, 6vw, 2rem);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0;
+  color: #2b1d14;
 }
 
-/* ========================
-   SECCIÓN ALMUERZOS
-   ======================== */
-.almuerzos {
-  padding: 60px 20px;
-  text-align: center;
-  background-color: rgba(253, 243, 227, 0.88);
+.hero-content h1 span {
+  color: #355a34;
 }
 
-.seccion-titulo {
-  font-size: 2rem;
-  color: #4a2c0a;
-  margin-bottom: 8px;
+/* Descripción */
+.hero-content p {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: black;
+  line-height: 1.6;
 }
 
-.seccion-subtitulo {
-  color: #7a4419;
-  font-size: 1rem;
-  margin-bottom: 40px;
-}
-
-.cards-container {
+/* Botones */
+.hero-actions {
+  margin-top: 32px;
   display: flex;
   justify-content: center;
-  gap: 28px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-.card {
-  background-color: #ffffff;
-  border: 2px solid #c8922a;
-  border-radius: 12px;
-  padding: 28px 24px;
-  width: 280px;
-  text-align: left;
+.button {
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s ease;
 }
 
-.card-destacado {
-  background-color: #4a2c0a;
-  color: #ffffff;
+/* Botón principal */
+.button-primary {
+  background: #355a34;
+  color: #fff;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.card-badge {
-  background-color: #c8922a;
-  color: #ffffff;
-  font-weight: bold;
-  font-size: 1.1rem;
-  padding: 6px 14px;
-  border-radius: 20px;
-  display: inline-block;
-  margin-bottom: 14px;
+.button-primary:hover {
+  background: #2a4929;
 }
 
-.card-titulo {
-  font-size: 1.3rem;
-  margin-bottom: 8px;
-  color: #4a2c0a;
+/* Botón outline */
+.button-outline {
+  background: transparent;
+  border: 1px solid #355a34;
+  color: #355a34;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.card-destacado .card-titulo {
-  color: #f5c842;
+.button-outline:hover {
+  background: rgba(53, 90, 52, 0.08);
 }
 
-.card-descripcion {
-  font-size: 0.95rem;
-  margin-bottom: 16px;
-  color: #555;
-}
-
-.card-destacado .card-descripcion {
-  color: #fdf3e3;
-}
-
-.card-proteinas {
-  list-style: none;
+/* Trust badges */
+.trust-row {
+  margin-top: 30px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 0.95rem;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* ========================
-   SECCIÓN CONTACTO
-   ======================== */
-.contacto {
-  background-color: rgba(45, 106, 45, 0.85);
-  color: #ffffff;
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.contacto .seccion-titulo {
-  color: #f5c842;
-}
-
-.contacto p {
-  margin: 12px 0 24px;
-  font-size: 1.1rem;
-}
-
-/* ========================
-   FOOTER
-   ======================== */
-.footer {
-  background-color: rgba(74, 44, 10, 0.92);
-  color: #fdf3e3;
-  text-align: center;
-  padding: 20px;
+.trust-row span {
+  background: #efe7dc;
+  padding: 10px 16px;
+  border-radius: 999px;
   font-size: 0.9rem;
+  color: #6d5a4d;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* ========================
+   MENU SECTION
+   ======================== */
+
+.menu-section {
+  padding: 60px 0px;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-heading h2 {
+  border-radius: 20px;
+  font-family: 'Playfair Display', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 2.5rem;
+  color:  #F4EDE4;
+  background-color:  #3E5738;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.section-heading p {
+  color: rgb(255, 255, 255);
+  background-color: #2a4929;
+  border-radius: 10px;
+}
+
+/* Grid */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+/* Card */
+.menu-card {
+  background: #fffaf4;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  transition: 0.2s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Imagen */
+.image-wrap {
+  position: relative;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Precio */
+.price-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #bf6e41;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+/* Body */
+.menu-card-body {
+  padding: 18px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.menu-card h3 {
+  font-family: 'Playfair Display', serif;
+  margin: 0 0 8px;
+}
+
+.menu-card p {
+  font-size: 0.95rem;
+  color: black;
+}
+
+/* Proteínas */
+.protein-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.protein-option {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #e5d5bb;
+  border: none;
+  cursor: pointer;
+}
+
+.protein-option.active {
+  background: #355a34;
+  color: white;
+}
+
+.feature-grid{
+  color: black;
+  background-color: #e5d5bb;
+  border-radius: 10px;
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+/* ========================
+   RESPONSIVE
+   ======================== */
+
+@media (max-width: 600px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
 }

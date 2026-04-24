@@ -10,15 +10,13 @@ export class AuthService {
   constructor (private http: HttpClient) {}
 
   login(user: string, pass: string) {
-    const body = new URLSearchParams();
-    body.set('username', user);
-    body.set('password', pass);
-
-    const options = {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    const body = {
+      email: user,
+      password: pass
     };
 
-    return this.http.post(`${this.url}/login`, body.toString(), options);
+
+    return this.http.post(`${this.url}/login`, body);
   }
 
   registro(datosUsuario: any){

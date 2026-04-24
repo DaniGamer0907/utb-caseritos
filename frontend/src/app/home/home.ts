@@ -1,5 +1,6 @@
-import { Component,inject,signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Store } from '../services/status/store';
+import { HomeMenuItem, HomeMenuService } from '../services/home/home.service';
 @Component({
   selector: 'app-home',
   imports: [],
@@ -7,21 +8,54 @@ import { Store } from '../services/status/store';
   styleUrl: './home.css',
 })
 export class Home {
-  store = inject(Store)
+  store = inject(Store);
+  private readonly homeMenuService = inject(HomeMenuService);
   readonly brand = 'Caseritos';
-    readonly selectedProteins = signal<Record<string, string>>(
-    this.store.menuItems.reduce(
-      (acc, item) => ({ ...acc, [item.id]: item.proteins[0] }),
-      {} as Record<string, string>
-    )
-  );
+  readonly menuItems = signal<HomeMenuItem[]>([]);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal('');
+  readonly selectedProteins = signal<Record<string, string>>({});
 
-    scrollToMenu(): void {
+  constructor() {
+    this.loadMenu();
+  }
+
+  private loadMenu(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
+    this.homeMenuService.getMenu().subscribe({
+      next: (menuItems) => {
+        this.menuItems.set(menuItems);
+        this.selectedProteins.set(
+          menuItems.reduce(
+            (acc, item) => ({
+              ...acc,
+              [item.id]: item.proteins[0] ?? '',
+            }),
+            {} as Record<string, string>
+          )
+        );
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        const detail =
+          typeof error?.error?.detail === 'string'
+            ? error.error.detail
+            : 'No fue posible cargar el menu.';
+        this.errorMessage.set(detail);
+        this.menuItems.set([]);
+        this.selectedProteins.set({});
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  scrollToMenu(): void {
     document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-    setProtein(menuItemId: string, protein: string): void {
+  setProtein(menuItemId: string, protein: string): void {
     this.selectedProteins.update((current) => ({ ...current, [menuItemId]: protein }));
   }
-  
 }

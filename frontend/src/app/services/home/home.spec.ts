@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
-import { AuthService } from './auth-service';
+import { HomeMenuService } from './home.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('HomeMenuService', () => {
+  let service: HomeMenuService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideHttpClient()],
     });
-    service = TestBed.inject(AuthService);
+    service = TestBed.inject(HomeMenuService);
   });
 
   it('should be created', () => {

@@ -202,6 +202,11 @@
   padding: 18px;
 }
 
+.menu-feedback-card {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
 html, body {
   height: 100%;
   margin: 0;
@@ -236,6 +241,11 @@ html, body {
 .protein-option.active {
   background: #355a34;
   color: white;
+}
+
+.button-block {
+  width: 100%;
+  margin-top: 18px;
 }
 
 .feature-grid{

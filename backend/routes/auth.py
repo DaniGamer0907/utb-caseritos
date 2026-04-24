@@ -3,10 +3,9 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.Usuario import Usuario
 from schemas.Usuario_schemas import UsuarioC
-from schemas.schemas import token
+from schemas.schemas import token, loginRequest as LoginRequest
 from auth.hashing import verify_password, hash_password
 from auth.jwt import create_access_token
-from schemas.Login_schema import LoginRequest
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

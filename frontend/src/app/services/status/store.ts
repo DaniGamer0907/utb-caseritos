@@ -1,4 +1,4 @@
-import { Injectable,computed,signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -23,30 +23,6 @@ export class Store {
       text: 'Pide facil por WhatsApp y recibe tu almuerzo al instante.'
     }
   ];
-
-     readonly menuItems = [
-    {
-      id: 'seco',
-      name: 'Almuerzo Seco',
-      description:
-        'Arroz + lentejas + ensalada + patacon + jugo. Incluye proteina a eleccion.',
-      price: 13000,
-      image:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-eMu5FvGyMG2rfjj8KO2AfRXCw0tzTo.png',
-      proteins: ['Cerdo asado', 'Pechuga bechamel', 'Cerdo BBQ']
-    },
-    {
-      id: 'corriente',
-      name: 'Almuerzo Corriente',
-      description:
-        'Arroz + lentejas + ensalada + patacon + sopa del dia + jugo. El almuerzo mas completo.',
-      price: 16000,
-      image:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-eMu5FvGyMG2rfjj8KO2AfRXCw0tzTo.png',
-      proteins: ['Cerdo asado', 'Pechuga bechamel', 'Cerdo BBQ']
-    }
-  ];
-
 
       openWhatsApp(baseMessage?: string): void {
     const url = baseMessage

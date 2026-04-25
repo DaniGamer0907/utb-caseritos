@@ -1,0 +1,43 @@
+<article class="menu-card">
+  <div class="image-wrap">
+    <img [src]="item.image" [alt]="item.name" loading="lazy" />
+    <span class="badge-mas-pedido">⭐ ¡Más pedido!</span>
+    <span class="price-tag">{{ store.formatPrice(item.price) }}</span>
+  </div>
+
+  <div class="menu-card-body">
+    <div>
+      <h3>{{ item.name }}</h3>
+      <p class="description">{{ item.description }}</p>
+    </div>
+
+    <div class="protein-group">
+      <span>Elige tu proteína:</span>
+      <div class="protein-options">
+        @for (protein of item.proteins; track protein) {
+          <button
+            class="protein-option"
+            type="button"
+            [class.active]="selectedProtein() === protein"
+            (click)="setProtein(protein)"
+          >
+            🥩 {{ protein }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <button
+      class="button-block"
+      [class.success]="isAdded()"
+      (click)="handleAddToCart()"
+      [disabled]="isAdded()"
+    >
+      @if (isAdded()) {
+        ✓ Agregado
+      } @else {
+        + Agregar al pedido
+      }
+    </button>
+  </div>
+</article>

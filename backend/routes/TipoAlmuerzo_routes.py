@@ -3,16 +3,22 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.TipoAlmuerzo import TipoAlmuerzo
 from schemas.TipoAlmuerzo_schemas import TipoAlmuerzoC
-from auth.dependencies import solo_admin, solo_cliente
+from auth.dependencies import require_admin
 
-router= APIRouter(prefix="/tipoalmuerzo", tags=["Tipo de Almuerzos"])
+router = APIRouter(prefix="/tipoalmuerzo", tags=["Tipo de Almuerzos"])
 
-@router.post("/crearTipoAlmuerzo")
+
+@router.post("/crearTipoAlmuerzo", dependencies=[Depends(require_admin)])
 def crear_tipo_de_almuerzo(tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
-    almuerzodb = TipoAlmuerzo(nombre=tipo_almuerzo.nombre, precio=tipo_almuerzo.precio, descripcion=tipo_almuerzo.descripcion )
+    almuerzodb = TipoAlmuerzo(
+        nombre=tipo_almuerzo.nombre,
+        precio=tipo_almuerzo.precio,
+        descripcion=tipo_almuerzo.descripcion
+    )
     db.add(almuerzodb)
     db.commit()
     return {"mensaje": "Tipo de almuerzo agregado correctamente"}
+
 
 @router.get("/listTiposAlmuerzo")
 def obtener_lista_tipos_de_almuerzo(db: Session = Depends(get_db)):
@@ -22,17 +28,19 @@ def obtener_lista_tipos_de_almuerzo(db: Session = Depends(get_db)):
     else:
         return almuerzos
 
+
 @router.get("/getTipoAlmuerzo")
-def obtener_tipo_de_almuerzo(id: int, db: Session=Depends(get_db)):
-    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id==id).first()
+def obtener_tipo_de_almuerzo(id: int, db: Session = Depends(get_db)):
+    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id == id).first()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
     else:
         return almuerzos
-    
-@router.put("/actualizarTipoAlmuerzo")
+
+
+@router.put("/actualizarTipoAlmuerzo", dependencies=[Depends(require_admin)])
 def actualizar_tipo_de_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzoC, db: Session = Depends(get_db)):
-    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id==id).first()
+    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id == id).first()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
     else:
@@ -40,17 +48,14 @@ def actualizar_tipo_de_almuerzo(id: int, nuevo_tipo_almuerzo: TipoAlmuerzoC, db:
         almuerzos.precio = nuevo_tipo_almuerzo.precio #type: ignore
         db.commit()
         return {"mensaje": "Tipo de almuerzo actualizado correctamente"}
-    
 
-@router.delete("/borrarTipoAlmuerzo")
+
+@router.delete("/borrarTipoAlmuerzo", dependencies=[Depends(require_admin)])
 def eliminar_tipo_de_almuerzo(id: int, db: Session = Depends(get_db)):
-    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id==id).first()
+    almuerzos = db.query(TipoAlmuerzo).filter(TipoAlmuerzo.id == id).first()
     if not almuerzos:
         raise HTTPException(status_code=404, detail="Almuerzo no encontrado")
     else:
         db.delete(almuerzos)
         db.commit()
         return {"mensaje": "Tipo de almuerzo eliminado correctamente"}
-
-
-    

@@ -1,12 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { Store } from '../services/status/store';
 import { HomeMenuItem, HomeMenuService } from '../services/home/home.service';
+import { MenuCardComponent } from './menu-card/menu-card.component';
+
 @Component({
   selector: 'app-home',
-  imports: [],
+  standalone: true,
+  imports: [MenuCardComponent], // <--- Importa aquí tu componente
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
+
 export class Home {
   store = inject(Store);
   private readonly homeMenuService = inject(HomeMenuService);

@@ -1,15 +1,33 @@
-/* ===== FONDO DE LA PÁGINA (imagen de la mesa de madera) ===== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Lato:wght@400;600&display=swap');
+
+/* ===== FONDO DE LA PÁGINA ===== */
 body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background-image: url('/assets/fondo_caserito.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-image: url('/assets/fondo_caserito.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: 'Lato', 'Georgia', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+/* ===== CONTENEDOR GLOBAL ===== */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img { max-width: 100%; }
+button { font-family: inherit; }

@@ -3,9 +3,11 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background-image: url('/assets/Fondo.jpg');
+    background-image: url('/assets/fondo_caserito.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
     display: flex;
     justify-content: center;
     align-items: center;

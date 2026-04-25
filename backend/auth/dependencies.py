@@ -24,16 +24,26 @@ def get_current_user(
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-    return role
+    return {
+        "user": usuario,
+        "role": role,
+        "email": email
+    }
 
 
-def solo_admin(current=Depends(get_current_user)):
-    if current["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Solo administradores")
-    return current["user"]
+def require_admin(current_user=Depends(get_current_user)):
+    if current_user["role"] != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para esta accion"
+        )
+    return current_user["user"]
 
 
-def solo_cliente(current=Depends(get_current_user)):
-    if current["role"] != "cliente":
-        raise HTTPException(status_code=403, detail="Solo clientes")
-    return current["user"]
+def require_cliente(current_user=Depends(get_current_user)):
+    if current_user["role"] not in {"cliente", "admin"}:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para esta accion"
+        )
+    return current_user["user"]

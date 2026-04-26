@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CartStore } from '../services/cart/cart-store';
+import { CartStore } from '../../../../services/cart/cart-store';
 
 @Component({
   selector: 'app-auth-modal',

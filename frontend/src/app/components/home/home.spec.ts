@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { Home } from './home';
-import { HomeMenuService } from '../services/home/home.service';
+import { HomeMenuService } from '../../services/home/home.service';
 
 describe('Home', () => {
   let component: Home;

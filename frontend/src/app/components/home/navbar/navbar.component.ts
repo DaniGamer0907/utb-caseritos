@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CartStore } from '../services/cart/cart-store';
+import { CartStore } from '../../../services/cart/cart-store';
 import { CartPanelComponent } from '../cart-panel/cart-panel.component';
-import { AuthModalComponent } from '../auth-modal/auth-modal.component';
+import { AuthModalComponent } from './auth-modal/auth-modal.component';
 
 @Component({
   selector: 'app-navbar',

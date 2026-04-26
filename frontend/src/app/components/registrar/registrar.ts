@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../auth-service';
+import { AuthService } from '../../services/auth/auth-service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

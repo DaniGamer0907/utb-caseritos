@@ -19,13 +19,6 @@ body {
   color: #111827;
 }
 
-/* LAYOUT */
-
-.admin-wrapper {
-  display: flex;
-  min-height: 100vh;
-}
-
 /* NAV */
 
 .sidebar-nav {
@@ -57,11 +50,30 @@ body {
 
 .main-content {
   background:  #F5EAD0;
-  width: 100%;
+  width: 80%;
   padding: 40px 48px;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 20px 80px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+
+  &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" opacity="0.08"><text y="40" font-size="36">🌿</text></svg>') repeat;
+      pointer-events: none;
+    }
+}
+
+.center-page{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 /* TOPBAR */
@@ -74,6 +86,19 @@ body {
   padding: 10px;
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   justify-content: space-between;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+
+  &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" opacity="0.08"><text y="40" font-size="36">🫜</text></svg>') repeat;
+      pointer-events: none;
+    }
 }
 
 .page-title {
@@ -81,12 +106,7 @@ body {
   margin: 5px;
   font-size: 28px;
   font-family: 'Playfair Display', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-}
-
-.page-date {
-  font-size: 13px;
-  color: black;
-  text-decoration: overline;
+  margin-top: 15px;
 }
 
 .topbar-right {
@@ -94,11 +114,83 @@ body {
   gap: 12px;
   align-items: center;
   margin-right: 50px;
+  flex-wrap: wrap;
 }
 
 .topbar-left{
-  margin-left: 10px
-  
+  margin-left: 10px;
+  display: flex;
+}
+
+/* botón hamburguesa */
+.menu-btn {
+  display: none;
+  font-size: 20px;
+  background: none;
+  border: none;
+  margin-right: 20px;
+  margin-bottom: 1px;
+  padding-top: 15px;
+  cursor: pointer;
+}
+
+/* SIDEBAR */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: 0.3s;
+  z-index: 1000;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.menu-item {
+  padding: 12px;
+  border: none;
+  background: #F3F4F6;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.close-item{
+  padding: 12px;
+  border: none;
+  background: #F3F4F6;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+
+  .menu-btn {
+    display: block;
+  }
+
+  /* ocultamos botones del topbar */
+  .topbar-right {
+    display: none;
+  }
+}
+
+/* 💻 DESKTOP */
+@media (min-width: 769px) {
+  .mobile-menu {
+    display: none;
+  }
 }
 
 
@@ -112,7 +204,35 @@ body {
   padding: 8px 14px;
   border-radius: 999px;
   width: 260px;
-  margin: 20px;
+  margin: 10px;
+}
+
+.new-order-btn{
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  background: white;
+}
+
+.new-lunch-btn{
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  background: white;
+}
+
+.new-fill-btn{
+  border: none;
+  border-radius: 10px;
+  padding: 8px;
+  background: white;
+}
+
+.notif-btn{
+  border: none;
+  border-radius: 999px;
+  padding: 8px;
+  background: white;
 }
 
 .search-box input {
@@ -120,6 +240,8 @@ body {
   background: transparent;
   outline: none;
   width: 100%;
+  margin: 5px;
+  margin-left: 8px
 }
 
 /* BUTTON */
@@ -192,7 +314,7 @@ body {
   padding: 4px;
   border-radius: 999px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
 }
 
 .tab {

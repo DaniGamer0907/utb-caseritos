@@ -8,6 +8,12 @@
         text-align: center;
     }
 
+    .center-page{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
     /* ===== TÍTULO DEL FORMULARIO ===== */
     .titulo-form {
         font-family: 'Dancing Script', cursive;

@@ -1,26 +1,35 @@
-<div class="admin-wrapper">
-
+<div class="center-page">
   <!-- Main content -->
   <main class="main-content">
-
     <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
-        <h1 class="page-title">Dashboard</h1>
-        <span class="page-date">Jueves, 24 de abril 2025</span>
+        <h1 class="page-title">Dashboard Caseritos</h1>
+
       </div>
+      <button class="menu-btn" (click)="toggleMenu()">☰</button>
       <div class="topbar-right">
         <div class="search-box">
           <span class="search-icon">⌕</span>
           <input type="text" placeholder="Buscar pedidos, clientes...">
         </div>
+        <button class="new-order-btn">+ Nueva proteina</button>
+        <button class="new-lunch-btn">+ Nuevo almuerzo</button>
+        <button class="new-fill-btn">+ Pagos recibidos</button>
         <button class="notif-btn">
           <span>🔔</span>
           <span class="notif-dot"></span>
         </button>
-        <button class="new-order-btn">+ Nuevo Pedido</button>
       </div>
     </header>
+    
+    <div class="mobile-menu" [class.open]="isMenuOpen">
+        <button class="menu-item">🔔 Notificaciones</button>
+        <button class="menu-item">+ Nueva proteína</button>
+        <button class="menu-item">+ Nuevo almuerzo</button>
+        <button class="menu-item">+ Pagos recibidos</button>
+        <button class="close-item" (click)="toggleMenu()">Cerrar</button>
+      </div>
 
     <!-- Stat cards -->
     <section class="stats-grid">

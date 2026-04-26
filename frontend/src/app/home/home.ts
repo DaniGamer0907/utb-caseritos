@@ -2,11 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { Store } from '../services/status/store';
 import { HomeMenuItem, HomeMenuService } from '../services/home/home.service';
 import { MenuCardComponent } from './menu-card/menu-card.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MenuCardComponent], // <--- Importa aquí tu componente
+  imports: [MenuCardComponent, NavbarComponent], 
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

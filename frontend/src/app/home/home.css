@@ -157,7 +157,17 @@
   text-align: center;
   z-index: 1;
   padding: 60px 16px;
+
+  &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" opacity="0.08"><text y="40" font-size="36">🌿</text></svg>') repeat;
+      pointer-events: none;
+    }
 }
+
 
 .section-heading {
   text-align: center;
@@ -195,7 +205,7 @@
   margin: 0 auto;
 }
 
-/* Estado de carga / error */
+
 .menu-feedback-card {
   grid-column: 1 / -1;
   text-align: center;
@@ -237,16 +247,18 @@
 /* Panel izquierdo */
 .feature-panel-left {
   background: #F4EDE4;
-  padding: 32px;
+  padding: 28px 32px;
   border-radius: 28px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
 }
 
 .feature-panel-left h3 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: #2b1d14;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   font-weight: 700;
 }
 
@@ -256,63 +268,74 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 13px;
+  position: relative;
+  z-index: 1;
 }
 
 .feature-list li {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  color: #4a3728;
 }
 
 .feature-icon {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   line-height: 1;
-  margin-top: 2px;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.feature-list li strong {
-  display: block;
-  font-size: 0.95rem;
-  color: #2b1d14;
+/* Olla decorativa */
+.pot-deco {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 140px;
+  opacity: 0.18;
+  pointer-events: none;
 }
 
-.feature-list li p {
-  margin: 2px 0 0;
-  font-size: 0.85rem;
-  color: #6d5a4d;
+.pot-deco svg {
+  width: 100%;
+  height: auto;
 }
 
 /* Panel derecho */
 .feature-panel-right {
-  background: #1B4332;
+  background: #2d5a27;
   color: white;
-  padding: 32px;
+  padding: 28px 24px;
   border-radius: 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 0;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   position: relative;
   overflow: hidden;
 }
 
-.feature-panel-right::before {
-  content: '🌿';
-  position: absolute;
-  font-size: 120px;
-  opacity: 0.07;
-  right: -10px;
-  bottom: -20px;
-  pointer-events: none;
+.feature-text {
+  flex: 1;
+  z-index: 1;
+  padding-right: 8px;
 }
 
 .feature-text h3 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 8px;
+  color: white;
 }
 
 .fresh-divider {
@@ -323,27 +346,51 @@
 }
 
 .feature-text p {
-  font-size: 0.9rem;
-  opacity: 0.88;
+  font-size: 0.88rem;
+  opacity: 0.9;
   line-height: 1.6;
-  max-width: 220px;
+  max-width: 200px;
+}
+
+/* Imagen de verduras */
+.fresh-img-wrap {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.fresh-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.75;
+  border-radius: 0 28px 28px 0;
 }
 
 .fresh-badge {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
   background: #e8a020;
   color: white;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   text-align: center;
   line-height: 1.3;
-  width: 84px;
-  height: 84px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
   flex-shrink: 0;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
 }
 
 /* ===== FOOTER ===== */
@@ -354,7 +401,7 @@
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 50px;
 }
 
 .footer-item {
@@ -407,3 +454,9 @@
 
   .feature-text p { max-width: 100%; }
 }
+
+
+* {
+  box-sizing: border-box;
+}
+

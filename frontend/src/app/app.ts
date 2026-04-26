@@ -3,10 +3,13 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterModule],
-  template: `<router-outlet></router-outlet>`,
+  standalone: true,
+  imports: [RouterModule, RouterOutlet],
+  template: `
+    <router-outlet />
+  `,
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('frontend');
+  protected readonly title = signal('caseritos');
 }

@@ -1,3 +1,4 @@
+<app-navbar />
 <!-- ===== HERO ===== -->
 <section class="hero-section">
   <div class="container hero-content">
@@ -79,18 +80,48 @@
 
       <!-- Panel izquierdo: Por qué elegirnos -->
       <article class="feature-panel-left">
-        <h3>Por qué Elegirnos</h3>
+        <h3>Por que elegirnos</h3>
         <ul class="feature-list">
-          @for (card of store.featureCards; track card.title) {
-            <li>
-              <span class="feature-icon">{{ card.icon }}</span>
-              <div>
-                <strong>{{ card.title }}</strong>
-                <p>{{ card.text }}</p>
-              </div>
-            </li>
-          }
+          <li>
+            <span class="feature-icon">🍲</span>
+            <span>Sabor casero que reconforta</span>
+          </li>
+          <li>
+            <span class="feature-icon">⚖️</span>
+            <span>Porciones generosas y balanceadas</span>
+          </li>
+          <li>
+            <span class="feature-icon">🌿</span>
+            <span>Ingredientes frescos y de calidad</span>
+          </li>
+          <li>
+            <span class="feature-icon">❤️</span>
+            <span>Hecho con amor, como en casa</span>
+          </li>
         </ul>
+
+        <!-- Olla decorativa -->
+        <div class="pot-deco" aria-hidden="true">
+          <svg viewBox="0 0 160 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- vapor -->
+            <path d="M60 28 Q55 16 62 8 Q68 1 63 -6" stroke="#b5c9a0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M80 24 Q75 12 82 4 Q88 -3 83 -10" stroke="#b5c9a0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M100 28 Q95 16 102 8 Q108 1 103 -6" stroke="#b5c9a0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <!-- tapa -->
+            <path d="M40 62 Q80 48 120 62" stroke="#8fa87a" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <rect x="70" y="52" width="20" height="10" rx="5" fill="#8fa87a"/>
+            <!-- cuerpo olla -->
+            <path d="M38 68 Q34 120 38 138 Q80 154 122 138 Q126 120 122 68 Z" fill="none" stroke="#8fa87a" stroke-width="3"/>
+            <!-- corazón interior -->
+            <path d="M80 100 C80 100 68 91 68 84 C68 79 72 76 76 78 C78 79 80 82 80 82 C80 82 82 79 84 78 C88 76 92 79 92 84 C92 91 80 100 80 100Z" fill="#c8a87a" opacity="0.6"/>
+            <!-- asas -->
+            <path d="M38 85 Q28 85 28 95 Q28 105 38 105" stroke="#8fa87a" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M122 85 Q132 85 132 95 Q132 105 122 105" stroke="#8fa87a" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- hoja deco -->
+            <path d="M50 148 Q40 160 30 155 Q38 145 50 148Z" fill="#b5c9a0" opacity="0.5"/>
+            <path d="M110 148 Q120 160 130 155 Q122 145 110 148Z" fill="#b5c9a0" opacity="0.5"/>
+          </svg>
+        </div>
       </article>
 
       <!-- Panel derecho: Ingredientes Frescos -->
@@ -98,9 +129,15 @@
         <div class="feature-text">
           <h3>Ingredientes Frescos</h3>
           <div class="fresh-divider"></div>
-          <p>Usamos solo ingredientes locales de la mejor calidad para ofrecerte lo mejor cada día.</p>
+          <p>Usamos solo ingredientes frescos y de la mejor calidad para ofrecerte lo mejor cada día.</p>
         </div>
-        <div class="fresh-badge">Frescura<br>que se<br>siente</div>
+        <div class="fresh-img-wrap">
+          <img
+            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=320&q=80"
+            alt="Verduras frescas"
+            class="fresh-img">
+          <div class="fresh-badge">Frescura<br>que se<br>siente</div>
+        </div>
       </article>
 
     </div>
@@ -116,13 +153,15 @@
       <p>Restaurante casero colombiano</p>
     </div>
   </div>
-  <div class="footer-item" (click)="store.openWhatsApp()" style="cursor:pointer">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" class="footer-wa-icon">
+
+  <div class="footer-item">
+    <span class="footer-icon">⚡</span>
     <div>
-      <strong>Pedidos por WhatsApp</strong>
-      <p>Rápido, fácil y seguro</p>
+      <strong>Pedidos rápidos</strong>
+      <p>Fácil y seguro</p>
     </div>
   </div>
+
   <div class="footer-item">
     <span class="footer-icon">❤️</span>
     <div>

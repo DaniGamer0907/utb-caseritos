@@ -1,6 +1,7 @@
 import { Component, Input, inject, signal, OnInit } from '@angular/core';
 import { CommonModule,} from '@angular/common';
 import { Store } from '../../services/status/store';
+import { CartStore } from '../../services/cart/cart-store';
 import { HomeMenuItem } from '../../services/home/home.service';
 
 @Component({
@@ -12,15 +13,14 @@ import { HomeMenuItem } from '../../services/home/home.service';
 })
 export class MenuCardComponent implements OnInit {
   store = inject(Store);
-  
+  cartStore = inject(CartStore);
+
   @Input({ required: true }) item!: HomeMenuItem;
 
-  // Estado local usando Signals
   selectedProtein = signal<string>('');
   isAdded = signal(false);
 
   ngOnInit(): void {
-    // Inicializamos con la primera proteína disponible
     if (this.item.proteins.length > 0) {
       this.selectedProtein.set(this.item.proteins[0]);
     }
@@ -31,11 +31,15 @@ export class MenuCardComponent implements OnInit {
   }
 
   handleAddToCart(): void {
-    // Aquí puedes añadir la lógica de autenticación que mencionaste
-    // Por ahora, simulamos el feedback visual de "Agregado"
+    if (!this.cartStore.isAuthenticated()) {
+      // Si no está autenticado, abre el modal de login
+      this.cartStore.openLogin();
+      return;
+    }
+    this.cartStore.addToCart(this.item, this.selectedProtein());
     this.isAdded.set(true);
-
-
+    // Abre el panel del carrito para que vea que se agregó
+    this.cartStore.showCartPanel.set(true);
     setTimeout(() => this.isAdded.set(false), 1500);
   }
 }

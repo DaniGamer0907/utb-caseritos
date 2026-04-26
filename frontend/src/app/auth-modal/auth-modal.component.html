@@ -1,0 +1,104 @@
+@if (store.showAuthModal()) {
+  <!-- Backdrop -->
+  <div class="modal-backdrop" (click)="close()"></div>
+
+  <!-- Modal -->
+  <div class="modal">
+    <!-- Header -->
+    <div class="modal__header">
+      <h2 class="modal__title">
+        {{ store.authModalType() === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta' }}
+      </h2>
+      <button class="modal__close" (click)="close()">✕</button>
+    </div>
+
+    <!-- Form -->
+    <div class="modal__body">
+      <!-- Error -->
+      @if (error()) {
+        <div class="modal__error">⚠️ {{ error() }}</div>
+      }
+
+      <!-- Name (register only) -->
+      @if (store.authModalType() === 'register') {
+        <div class="field">
+          <label class="field__label">Nombre completo</label>
+          <input
+            class="field__input"
+            type="text"
+            placeholder="Juan Pérez"
+            [value]="name()"
+            (input)="name.set($any($event.target).value)"
+          >
+        </div>
+      }
+
+      <!-- Email -->
+      <div class="field">
+        <label class="field__label">Correo electrónico</label>
+        <input
+          class="field__input"
+          type="email"
+          placeholder="correo@ejemplo.com"
+          [value]="email()"
+          (input)="email.set($any($event.target).value)"
+        >
+      </div>
+
+      <!-- Password -->
+      <div class="field">
+        <label class="field__label">Contraseña</label>
+        <div class="field__password-wrap">
+          <input
+            class="field__input"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="••••••••"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+          >
+          <button class="field__eye" type="button" (click)="showPassword.update(v => !v)">
+            {{ showPassword() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm password (register only) -->
+      @if (store.authModalType() === 'register') {
+        <div class="field">
+          <label class="field__label">Confirmar contraseña</label>
+          <input
+            class="field__input"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="••••••••"
+            [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)"
+          >
+        </div>
+      }
+
+      <!-- Submit -->
+      <button
+        class="modal__submit"
+        [disabled]="loading()"
+        (click)="submit()"
+      >
+        @if (loading()) {
+          <span class="modal__spinner"></span> Cargando...
+        } @else {
+          {{ store.authModalType() === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta' }}
+        }
+      </button>
+
+      <!-- Switch -->
+      <p class="modal__switch">
+        @if (store.authModalType() === 'login') {
+          ¿No tienes cuenta?
+          <button class="modal__switch-btn" (click)="switchType()">Regístrate aquí</button>
+        } @else {
+          ¿Ya tienes cuenta?
+          <button class="modal__switch-btn" (click)="switchType()">Inicia sesión</button>
+        }
+      </p>
+    </div>
+  </div>
+}

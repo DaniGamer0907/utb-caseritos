@@ -1,0 +1,76 @@
+<!-- Sticky Navbar -->
+<header class="navbar">
+  <div class="navbar__inner">
+
+    <!-- Logo -->
+    <a class="navbar__logo" routerLink="/home">
+      <div class="navbar__logo-icon">
+        <img src="assets/logo_FondBlan.png" alt="Caseritos" class="navbar__logo-img">
+      </div>
+      <span class="navbar__brand">Caseritos</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="navbar__links">
+      <button class="nav-link" (click)="scrollToMenu()">Ver Menú</button>
+
+      @if (store.isAuthenticated()) {
+        <div class="nav-user">
+          <span class="nav-user__icon">👤</span>
+          <span class="nav-user__name">Hola, {{ store.user()?.name }}</span>
+        </div>
+        <button class="nav-btn nav-btn--ghost" (click)="handleLogout()">
+          <span>🚪</span> Salir
+        </button>
+      } @else {
+        <button class="nav-btn nav-btn--ghost" (click)="handleLogin()">Iniciar Sesión</button>
+        <button class="nav-btn nav-btn--primary" (click)="handleRegister()">Registrarse</button>
+      }
+
+      <!-- Cart button -->
+      <button class="cart-btn" (click)="store.toggleCartPanel()" aria-label="Carrito">
+        🛒
+        @if (store.cartCount() > 0) {
+          <span class="cart-btn__badge">{{ store.cartCount() }}</span>
+        }
+      </button>
+    </nav>
+
+    <!-- Mobile: cart + hamburger -->
+    <div class="navbar__mobile-actions">
+      <button class="cart-btn" (click)="store.toggleCartPanel()" aria-label="Carrito">
+        🛒
+        @if (store.cartCount() > 0) {
+          <span class="cart-btn__badge">{{ store.cartCount() }}</span>
+        }
+      </button>
+      <button class="hamburger" (click)="toggleMobile()" aria-label="Menú">
+        {{ mobileMenuOpen() ? '✕' : '☰' }}
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile dropdown -->
+  @if (mobileMenuOpen()) {
+    <div class="navbar__mobile-menu">
+      <button class="nav-link" (click)="scrollToMenu()">Ver Menú</button>
+      @if (store.isAuthenticated()) {
+        <div class="nav-user">
+          <span>👤</span>
+          <span>Hola, {{ store.user()?.name }}</span>
+        </div>
+        <button class="nav-btn nav-btn--ghost" (click)="handleLogout()">🚪 Salir</button>
+      } @else {
+        <button class="nav-btn nav-btn--ghost" (click)="handleLogin()">Iniciar Sesión</button>
+        <button class="nav-btn nav-btn--primary" (click)="handleRegister()">Registrarse</button>
+      }
+    </div>
+  }
+</header>
+
+<!-- Cart Panel Overlay -->
+<app-cart-panel />
+
+<!-- Auth Modal -->
+<app-auth-modal />

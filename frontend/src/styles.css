@@ -12,7 +12,7 @@ body {
   background-attachment: fixed;
   font-family: 'Lato', 'Georgia', sans-serif;
   -webkit-font-smoothing: antialiased;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
 }
@@ -25,9 +25,9 @@ body {
   padding: 0 16px;
 }
 
-* {
+/* * {
   box-sizing: border-box;
-}
+} */
 
 img { max-width: 100%; }
 button { font-family: inherit; }

@@ -9,6 +9,13 @@
         padding: 10px;
     }
 
+    .center-page {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
     .titulo-form {
         font-family: 'Dancing Script', cursive;
         color: #fff8e7;

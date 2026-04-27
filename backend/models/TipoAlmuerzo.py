@@ -10,5 +10,5 @@ class TipoAlmuerzo(Base):
     precio = Column(Float)
 
     #relaciones
-    almuerzo= relationship("Almuerzo", back_populates= "tipo_almuerzo")
+    detalle_pedido = relationship("DetallePedido", back_populates= "tipoalmuerzo")
     

@@ -82,6 +82,9 @@ export class CartStore {
           this.isAuthenticated.set(true);
           this.user.set({ name, email, role: res.role });
           resolve(true);
+          if (res.role === 'admin') {
+            this.router.navigate(['/admin']);
+          }
         },
         error: () => resolve(false),
       });

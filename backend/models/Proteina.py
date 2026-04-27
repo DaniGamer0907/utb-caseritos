@@ -10,5 +10,5 @@ class Proteina(Base):
     avaliable = Column(Integer)
 
     #relaciones
-    almuerzo= relationship("Almuerzo", back_populates= "proteina")
+    detalle_pedido = relationship("DetallePedido", back_populates= "proteina")
 

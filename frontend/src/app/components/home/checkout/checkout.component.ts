@@ -130,20 +130,14 @@ export class CheckoutComponent {
 
     try {
       // 1. Resolver almuerzo_id para cada item del carrito
-      const almuerzoRequests = this.store.cart().map(item => 
-        firstValueFrom(this.pedidosService.getOrCreateAlmuerzo(item.selectedProtein.id, item.menuItem.apiId))
-      );
-      
-      const almuerzos = await Promise.all(almuerzoRequests);
-
-      // 2. Preparar el pedido
       const pedidoPayload: PedidoPayload = {
         estado: this.paymentMethod() || 'pendiente',
         sugerencia: this.buildOrderSuggestion(),
       };
 
       const detallesPayload: Omit<DetallePedidoPayload, 'pedidoid'>[] = this.store.cart().map((item, index) => ({
-        almuerzoid: almuerzos[index].id,
+        proteinaid: item.selectedProtein.id,
+        tipalmuerzoid: item.menuItem.apiId,
         cantidad: item.quantity,
         precio_unitario: item.menuItem.price,
         total: item.menuItem.price * item.quantity,

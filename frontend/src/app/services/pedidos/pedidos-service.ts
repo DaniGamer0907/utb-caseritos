@@ -11,7 +11,8 @@ export interface PedidoPayload {
 
 export interface DetallePedidoPayload {
   pedidoid: number;
-  almuerzoid: number;
+  proteinaid: number;
+  tipalmuerzoid: number;
   cantidad: number;
   precio_unitario: number;
   total: number;
@@ -43,16 +44,6 @@ export class PedidosService {
       `${this.apiUrl}/detallesPedido/crearDetallesPedido`,
       payload,
       { headers: this.buildHeaders() }
-    );
-  }
-
-  getOrCreateAlmuerzo(proteinaid: number, tipalmuerzo: number): Observable<{ id: number }> {
-    return this.http.get<{ id: number }>(
-      `${this.apiUrl}/almuerzo/getOrCreateAlmuerzo`,
-      {
-        params: { proteinaid, tipalmuerzo },
-        headers: this.buildHeaders()
-      }
     );
   }
 

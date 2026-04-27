@@ -1,20 +1,20 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartStore } from '../../../services/cart/cart-store';
+import { CheckoutComponent } from '../checkout/checkout.component';
 
 @Component({
   selector: 'app-cart-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CheckoutComponent],
   templateUrl: './cart-panel.component.html',
   styleUrl: './cart-panel.component.css',
 })
 export class CartPanelComponent {
   store = inject(CartStore);
 
-  sendWhatsApp() {
-    const msg = this.store.buildWhatsAppMessage();
-    const url = `https://wa.me/573016221347?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank', 'noopener');
+  goToCheckout() {
+    this.store.showCartPanel.set(false);
+    this.store.showCheckout.set(true);
   }
 }

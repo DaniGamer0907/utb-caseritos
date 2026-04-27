@@ -199,3 +199,14 @@
 }
 
 .modal__switch-btn:hover { color: #2a4929; }
+
+/* Fila de dos campos lado a lado */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .field-row { grid-template-columns: 1fr; }
+}

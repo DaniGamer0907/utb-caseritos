@@ -62,9 +62,8 @@
 
         <!-- Actions -->
         <div class="cart-panel__actions">
-          <button class="cart-btn-whatsapp" (click)="sendWhatsApp()">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" class="cart-wa-icon">
-            Pedir por WhatsApp
+          <button class="cart-btn-checkout" (click)="goToCheckout()">
+            💳 Ir a pagar
           </button>
           <button class="cart-btn-clear" (click)="store.clearCart()">
             🗑️ Vaciar carrito
@@ -74,3 +73,6 @@
     }
   </aside>
 }
+
+<!-- Checkout overlay -->
+<app-checkout />

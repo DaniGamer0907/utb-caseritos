@@ -240,13 +240,13 @@
   background: #fdf8f2;
 }
 
-.cart-btn-whatsapp {
+.cart-btn-checkout {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   padding: 14px;
-  background: #16a34a;
+  background: #2d5a27;
   color: white;
   border: none;
   border-radius: 14px;
@@ -255,17 +255,12 @@
   cursor: pointer;
   font-family: inherit;
   transition: background 0.2s, transform 0.15s;
-  box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+  box-shadow: 0 4px 16px rgba(45,90,39,0.3);
 }
 
-.cart-btn-whatsapp:hover {
-  background: #15803d;
+.cart-btn-checkout:hover {
+  background: #1e3d1a;
   transform: translateY(-1px);
-}
-
-.cart-wa-icon {
-  width: 22px;
-  height: 22px;
 }
 
 .cart-btn-clear {

@@ -7,81 +7,95 @@
     <!-- Header -->
     <div class="modal__header">
       <h2 class="modal__title">
-        {{ store.authModalType() === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta' }}
+        {{ store.authModalType() === 'login' ? '👋 Iniciar Sesión' : '✨ Crear Cuenta' }}
       </h2>
       <button class="modal__close" (click)="close()">✕</button>
     </div>
 
-    <!-- Form -->
+    <!-- Body -->
     <div class="modal__body">
-      <!-- Error -->
+
       @if (error()) {
         <div class="modal__error">⚠️ {{ error() }}</div>
       }
 
-      <!-- Name (register only) -->
-      @if (store.authModalType() === 'register') {
+      <!-- ===== LOGIN ===== -->
+      @if (store.authModalType() === 'login') {
         <div class="field">
-          <label class="field__label">Nombre completo</label>
-          <input
-            class="field__input"
-            type="text"
-            placeholder="Juan Pérez"
-            [value]="name()"
-            (input)="name.set($any($event.target).value)"
-          >
+          <label class="field__label">Correo electrónico</label>
+          <input class="field__input" type="email" placeholder="correo@ejemplo.com"
+            [value]="email()" (input)="email.set($any($event.target).value)">
+        </div>
+
+        <div class="field">
+          <label class="field__label">Contraseña</label>
+          <div class="field__password-wrap">
+            <input class="field__input" [type]="showPassword() ? 'text' : 'password'"
+              placeholder="••••••••" [value]="password()"
+              (input)="password.set($any($event.target).value)">
+            <button class="field__eye" type="button" (click)="showPassword.update(v => !v)">
+              {{ showPassword() ? '🙈' : '👁️' }}
+            </button>
+          </div>
         </div>
       }
 
-      <!-- Email -->
-      <div class="field">
-        <label class="field__label">Correo electrónico</label>
-        <input
-          class="field__input"
-          type="email"
-          placeholder="correo@ejemplo.com"
-          [value]="email()"
-          (input)="email.set($any($event.target).value)"
-        >
-      </div>
-
-      <!-- Password -->
-      <div class="field">
-        <label class="field__label">Contraseña</label>
-        <div class="field__password-wrap">
-          <input
-            class="field__input"
-            [type]="showPassword() ? 'text' : 'password'"
-            placeholder="••••••••"
-            [value]="password()"
-            (input)="password.set($any($event.target).value)"
-          >
-          <button class="field__eye" type="button" (click)="showPassword.update(v => !v)">
-            {{ showPassword() ? '🙈' : '👁️' }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Confirm password (register only) -->
+      <!-- ===== REGISTRO ===== -->
       @if (store.authModalType() === 'register') {
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label">Nombre *</label>
+            <input class="field__input" type="text" placeholder="Juan"
+              [value]="name()" (input)="name.set($any($event.target).value)">
+          </div>
+          <div class="field">
+            <label class="field__label">Apellido *</label>
+            <input class="field__input" type="text" placeholder="Pérez"
+              [value]="lastname()" (input)="lastname.set($any($event.target).value)">
+          </div>
+        </div>
+
         <div class="field">
-          <label class="field__label">Confirmar contraseña</label>
-          <input
-            class="field__input"
-            [type]="showPassword() ? 'text' : 'password'"
-            placeholder="••••••••"
-            [value]="confirmPassword()"
-            (input)="confirmPassword.set($any($event.target).value)"
-          >
+          <label class="field__label">Correo electrónico *</label>
+          <input class="field__input" type="email" placeholder="correo@ejemplo.com"
+            [value]="email()" (input)="email.set($any($event.target).value)">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field__label">Teléfono</label>
+            <input class="field__input" type="tel" placeholder="3001234567"
+              [value]="phone()" (input)="phone.set($any($event.target).value)">
+          </div>
+          <div class="field">
+            <label class="field__label">Dirección</label>
+            <input class="field__input" type="text" placeholder="Calle 123 #4-56"
+              [value]="address()" (input)="address.set($any($event.target).value)">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label">Contraseña *</label>
+          <div class="field__password-wrap">
+            <input class="field__input" [type]="showPassword() ? 'text' : 'password'"
+              placeholder="Mínimo 6 caracteres" [value]="password()"
+              (input)="password.set($any($event.target).value)">
+            <button class="field__eye" type="button" (click)="showPassword.update(v => !v)">
+              {{ showPassword() ? '🙈' : '👁️' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label">Confirmar contraseña *</label>
+          <input class="field__input" [type]="showPassword() ? 'text' : 'password'"
+            placeholder="••••••••" [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)">
         </div>
       }
 
       <!-- Submit -->
-      <button
-        class="modal__submit"
-        [disabled]="loading()"
-        (click)="submit()"
-      >
+      <button class="modal__submit" [disabled]="loading()" (click)="submit()">
         @if (loading()) {
           <span class="modal__spinner"></span> Cargando...
         } @else {
@@ -99,6 +113,7 @@
           <button class="modal__switch-btn" (click)="switchType()">Inicia sesión</button>
         }
       </p>
+
     </div>
   </div>
 }

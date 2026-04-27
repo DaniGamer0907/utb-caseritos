@@ -1,0 +1,282 @@
+@if (store.showCheckout()) {
+  <div class="co-backdrop" (click)="editOrder()"></div>
+
+  <div class="co-sheet">
+
+    <!-- ═══════════ PANTALLA 1: CHECKOUT ═══════════ -->
+    @if (screen() === 'checkout') {
+      <div class="co-screen">
+
+        <!-- Header -->
+        <div class="co-header">
+          <button class="co-back" (click)="editOrder()" aria-label="Volver">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="co-header-center">
+            <div class="co-logo-wrap">
+              <img src="assets/logo_FondBlan.png" alt="Caseritos">
+            </div>
+            <div>
+              <h1>Finalizar pedido</h1>
+              <p>Elige cómo quieres pagar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="co-card co-summary">
+          <div class="co-card-label">🧾 Tu pedido</div>
+          @for (item of store.cart(); track item.id) {
+            <div class="co-summary-row">
+              <div class="co-summary-info">
+                <strong>{{ item.menuItem.name }}</strong>
+                <span>{{ item.selectedProtein }}</span>
+              </div>
+              <div class="co-summary-right">
+                <span class="co-qty">×{{ item.quantity }}</span>
+                <span class="co-item-price">{{ store.formatPrice(item.menuItem.price * item.quantity) }}</span>
+              </div>
+            </div>
+          }
+          <div class="co-total-row">
+            <span>Total a pagar</span>
+            <strong class="co-total-amount">{{ store.formatPrice(store.cartTotal()) }}</strong>
+          </div>
+          <button class="co-edit-link" (click)="editOrder()">✏️ Editar pedido</button>
+        </div>
+
+        <!-- Título métodos -->
+        <div class="co-section-label">Método de pago</div>
+
+        <!-- Métodos -->
+        <div class="co-methods">
+
+          <!-- Efectivo -->
+          <div class="co-method" [class.active]="paymentMethod() === 'efectivo'"
+               (click)="selectMethod('efectivo')">
+            <div class="co-method-left">
+              <div class="co-method-emoji">💵</div>
+              <div>
+                <strong>Efectivo al recibir</strong>
+                <p>El domiciliario llevará el vuelto listo</p>
+              </div>
+            </div>
+            <div class="co-radio" [class.on]="paymentMethod() === 'efectivo'"></div>
+          </div>
+
+          <!-- Nequi -->
+          <div class="co-method" [class.active]="paymentMethod() === 'nequi'"
+               (click)="selectMethod('nequi')">
+            <div class="co-method-left">
+              <div class="co-method-emoji">📱</div>
+              <div>
+                <strong>Nequi</strong>
+                <p>Transfiere y comparte tu # de referencia</p>
+              </div>
+            </div>
+            <div class="co-radio" [class.on]="paymentMethod() === 'nequi'"></div>
+          </div>
+
+          <!-- WhatsApp -->
+          <div class="co-method" [class.active]="paymentMethod() === 'whatsapp'"
+               (click)="selectMethod('whatsapp')">
+            <div class="co-method-left">
+              <div class="co-method-emoji">📲</div>
+              <div>
+                <strong>Coordinar por WhatsApp</strong>
+                <p>Te enviamos el resumen y acordamos el pago</p>
+              </div>
+            </div>
+            <div class="co-radio" [class.on]="paymentMethod() === 'whatsapp'"></div>
+          </div>
+
+        </div>
+
+        <!-- ── Detalle Efectivo ── -->
+        @if (paymentMethod() === 'efectivo') {
+          <div class="co-card co-cash-detail">
+            <div class="co-card-label">💴 ¿Con qué billetes vas a pagar? <span class="co-optional">(opcional)</span></div>
+            <p class="co-cash-hint">Selecciona los billetes para que el domiciliario lleve el vuelto exacto.</p>
+
+            <div class="co-bills-grid">
+              @for (bill of bills; track bill) {
+                <button class="co-bill"
+                        [class.selected]="isBillSelected(bill)"
+                        (click)="toggleBill(bill)">
+                  ${{ bill | number:'1.0-0' }}
+                </button>
+              }
+            </div>
+
+            <!-- Monedas -->
+            <label class="co-coins-toggle">
+              <input type="checkbox" [checked]="addCoins()"
+                (change)="addCoins.set($any($event.target).checked)">
+              <span>+ Agregar monedas</span>
+            </label>
+
+            @if (addCoins()) {
+              <input class="co-input" type="number" min="0" placeholder="Monto en monedas (ej: 500)"
+                [value]="coinsAmount()"
+                (input)="coinsAmount.set(+$any($event.target).value || 0)">
+            }
+
+            <!-- Calculadora vuelto -->
+            @if (selectedBills().length > 0 || (addCoins() && coinsAmount() > 0)) {
+              <div class="co-vuelto-box">
+                <div class="co-vuelto-row">
+                  <span>Total del pedido</span>
+                  <strong>{{ store.formatPrice(store.cartTotal()) }}</strong>
+                </div>
+                <div class="co-vuelto-row">
+                  <span>Entregas</span>
+                  <strong>{{ store.formatPrice(totalEntregado()) }}</strong>
+                </div>
+                <div class="co-vuelto-divider"></div>
+                @if (faltante() > 0) {
+                  <div class="co-vuelto-row co-faltante">
+                    <span>⚠️ Falta por cubrir</span>
+                    <strong>{{ store.formatPrice(faltante()) }}</strong>
+                  </div>
+                } @else {
+                  <div class="co-vuelto-row co-cambio">
+                    <span>💚 Vuelto que recibirás</span>
+                    <strong>{{ store.formatPrice(vuelto()) }}</strong>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Sin billetes seleccionados -->
+            @if (selectedBills().length === 0 && !addCoins()) {
+              <div class="co-exact-note">
+                <span>🪙</span>
+                <span>Si no seleccionas billetes, se asume pago exacto</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ── Detalle Nequi ── -->
+        @if (paymentMethod() === 'nequi') {
+          <div class="co-card co-nequi-detail">
+            <div class="co-card-label">📱 Datos de transferencia</div>
+
+            <div class="co-nequi-number-row">
+              <div class="co-nequi-num">
+                <span class="co-nequi-label-sm">Número Nequi</span>
+                <strong>{{ nequiNumber }}</strong>
+              </div>
+              <button class="co-copy" (click)="copyNequi()">
+                {{ nequiCopied() ? '✅ Copiado' : '📋 Copiar' }}
+              </button>
+            </div>
+
+            <div class="co-nequi-amount">
+              <span>Monto a transferir:</span>
+              <strong>{{ store.formatPrice(store.cartTotal()) }}</strong>
+            </div>
+
+            <div class="co-field">
+              <label>Número de referencia / comprobante *</label>
+              <input class="co-input" type="text" placeholder="Ej: 2024123456789"
+                [value]="nequiRef()"
+                (input)="nequiRef.set($any($event.target).value)">
+              <span class="co-field-hint">Lo encontrarás en el comprobante de la transferencia</span>
+            </div>
+          </div>
+        }
+
+        <!-- ── Detalle WhatsApp ── -->
+        @if (paymentMethod() === 'whatsapp') {
+          <div class="co-card co-wa-detail">
+            <div class="co-wa-row">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" class="co-wa-icon">
+              <div>
+                <strong>Enviaremos tu pedido completo</strong>
+                <p>Incluye platos, proteínas y total. Coordinamos el pago contigo.</p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Botón confirmar -->
+        <button class="co-confirm" [disabled]="!canConfirm() || confirming()" (click)="confirm()">
+          @if (confirming()) {
+            <span class="co-spinner"></span> Enviando pedido...
+          } @else if (paymentMethod() === 'whatsapp') {
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="" class="co-confirm-icon"> Enviar por WhatsApp
+          } @else {
+            ✅ Confirmar pedido
+          }
+        </button>
+
+        <p class="co-footer-note">
+          Tu pedido entra a preparación una vez lo confirmemos contigo 🍽️
+        </p>
+
+      </div>
+    }
+
+    <!-- ═══════════ PANTALLA 2: CONFIRMACIÓN ═══════════ -->
+    @if (screen() === 'confirmed') {
+      <div class="confirmed-screen">
+
+        <div class="confirmed-check">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="38" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+            <path d="M24 40 L35 52 L56 28" stroke="#16a34a" stroke-width="5.5"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  stroke-dasharray="60" stroke-dashoffset="0" class="check-path"/>
+          </svg>
+        </div>
+
+        <h1 class="confirmed-title">¡Pedido recibido!</h1>
+        <p class="confirmed-sub">Lo estamos revisando y te confirmamos pronto</p>
+
+        <div class="confirmed-order-num">
+          Pedido #{{ orderNumber() }}
+        </div>
+
+        <div class="confirmed-card">
+          @for (item of store.cart(); track item.id) {
+            <div class="confirmed-row">
+              <span>🍽️ {{ item.menuItem.name }}</span>
+              <strong>{{ item.selectedProtein }}</strong>
+            </div>
+          }
+          <div class="confirmed-row confirmed-row--payment">
+            <span>💳 Pago</span>
+            <strong>{{ paymentLabel }}</strong>
+          </div>
+          <div class="confirmed-row confirmed-row--total">
+            <span>Total</span>
+            <strong>{{ store.formatPrice(store.cartTotal()) }}</strong>
+          </div>
+
+          <!-- Info vuelto para efectivo -->
+          @if (paymentMethod() === 'efectivo' && selectedBills().length > 0) {
+            <div class="confirmed-vuelto">
+              <span>🔄 El domiciliario llevará</span>
+              <strong class="confirmed-vuelto-amount">{{ store.formatPrice(vuelto()) }} de vuelto</strong>
+            </div>
+          }
+        </div>
+
+        <div class="confirmed-status">
+          <div class="confirmed-status-dot"></div>
+          <div>
+            <strong>Tu pedido está en revisión</strong>
+            <p>Tiempo estimado: 15–20 min</p>
+          </div>
+        </div>
+
+        <div class="confirmed-actions">
+          <button class="confirmed-primary" (click)="goHome()">🏠 Volver al inicio</button>
+        </div>
+
+      </div>
+    }
+
+  </div>
+}

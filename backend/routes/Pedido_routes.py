@@ -4,20 +4,23 @@ from db import get_db
 from models.Pedido import Pedido
 from schemas.Pedido_schemas import PedidoC
 from auth.dependencies import require_cliente
+from models.Usuario import Usuario
 
 router = APIRouter(prefix="/pedido", tags=["Pedidos"])
 
 
 @router.post("/crearPedido", dependencies=[Depends(require_cliente)])
-def crear_pedido(pedido: PedidoC, db: Session = Depends(get_db)):
+def crear_pedido(pedido: PedidoC, db: Session = Depends(get_db), current_user: Usuario = Depends(require_cliente)):
     pedidodb = Pedido(
-        fecha_creacion=pedido.fecha_creacion,
+        fecha_creacion=pedido.fecha_creacion or Pedido.fecha_creacion.default.arg, # type: ignore
         estado=pedido.estado,
-        sugerencia=pedido.sugerencia
+        sugerencia=pedido.sugerencia,
+        usuario_id=current_user.id
     )
     db.add(pedidodb)
     db.commit()
-    return {"mensaje": "Pedido agregado correctamente"}
+    db.refresh(pedidodb)
+    return {"mensaje": "Pedido agregado correctamente", "id": pedidodb.id}
 
 
 @router.get("/listPedidos", dependencies=[Depends(require_cliente)])

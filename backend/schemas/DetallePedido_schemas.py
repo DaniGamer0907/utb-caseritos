@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 
 class DetallePedidoC(BaseModel):
+    pedidoid: int
+    almuerzoid: int
     cantidad: int 
     precio_unitario: float
     total: float

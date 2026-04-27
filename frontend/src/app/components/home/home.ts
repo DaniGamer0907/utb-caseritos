@@ -36,7 +36,7 @@ export class Home {
           menuItems.reduce(
             (acc, item) => ({
               ...acc,
-              [item.id]: item.proteins[0] ?? '',
+              [item.id]: item.proteins[0]?.nombre ?? '',
             }),
             {} as Record<string, string>
           )

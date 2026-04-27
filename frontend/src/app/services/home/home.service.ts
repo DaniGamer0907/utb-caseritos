@@ -22,7 +22,7 @@ export interface HomeMenuItem {
   description: string;
   price: number;
   image: string;
-  proteins: string[];
+  proteins: { id: number; nombre: string }[];
 }
 
 @Injectable({
@@ -44,7 +44,7 @@ export class HomeMenuService {
       map(({ tipos, proteinas }) => {
         const availableProteins = proteinas
           .filter((protein) => Boolean(protein.avaliable))
-          .map((protein) => protein.nombre);
+          .map((protein) => ({ id: protein.id, nombre: protein.nombre }));
 
         return tipos.map((tipo) => ({
           id: String(tipo.id),

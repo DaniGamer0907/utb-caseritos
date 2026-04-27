@@ -1,6 +1,8 @@
-import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { CartStore } from '../../../services/cart/cart-store';
+import { DetallePedidoPayload, PedidoPayload, PedidosService } from '../../../services/pedidos/pedidos-service';
 
 type PaymentMethod = 'efectivo' | 'nequi' | 'whatsapp' | null;
 
@@ -12,10 +14,11 @@ type PaymentMethod = 'efectivo' | 'nequi' | 'whatsapp' | null;
   styleUrl: './checkout.component.css',
 })
 export class CheckoutComponent {
-  store = inject(CartStore);
+  readonly store = inject(CartStore);
+  private readonly pedidosService = inject(PedidosService);
 
-  screen = signal<'checkout' | 'confirmed'>('checkout');
-  paymentMethod = signal<PaymentMethod>(null);
+  readonly screen = signal<'checkout' | 'confirmed'>('checkout');
+  readonly paymentMethod = signal<PaymentMethod>(null);
 
   // ── Efectivo ──────────────────────────────────────
   bills = [100000, 50000, 20000, 10000, 5000, 2000];
@@ -44,13 +47,30 @@ export class CheckoutComponent {
   nequiRef = signal('');
   nequiCopied = signal(false);
 
-  // ── Pedido ────────────────────────────────────────
-  orderNumber = signal('');
-  confirming = signal(false);
+  readonly orderNumber = signal('');
+  readonly confirming = signal(false);
+  readonly submitError = signal('');
 
-  // ── Helpers ───────────────────────────────────────
-  selectMethod(m: PaymentMethod) {
-    this.paymentMethod.set(m);
+  readonly canConfirm = computed(() => {
+    const method = this.paymentMethod();
+    if (!method || this.store.cart().length === 0) {
+      return false;
+    }
+
+    if (method === 'efectivo') {
+      return true;
+    }
+
+    if (method === 'nequi') {
+      return this.nequiRef().trim().length >= 4;
+    }
+
+    return true;
+  });
+
+  selectMethod(method: PaymentMethod) {
+    this.paymentMethod.set(method);
+    this.submitError.set('');
     this.selectedBills.set([]);
     this.addCoins.set(false);
     this.coinsAmount.set(0);
@@ -72,18 +92,17 @@ export class CheckoutComponent {
     setTimeout(() => this.nequiCopied.set(false), 2200);
   }
 
-  canConfirm = computed(() => {
-    const m = this.paymentMethod();
-    if (!m) return false;
-    if (m === 'efectivo') return true; // siempre puede confirmar (billetes son info para domiciliario)
-    if (m === 'nequi') return this.nequiRef().trim().length >= 4;
-    return true; // whatsapp
-  });
+  get paymentLabel(): string {
+    const method = this.paymentMethod();
 
-  get paymentLabel() {
-    const m = this.paymentMethod();
-    if (m === 'nequi') return 'Nequi';
-    if (m === 'whatsapp') return 'Coordinado por WhatsApp';
+    if (method === 'nequi') {
+      return 'Nequi';
+    }
+
+    if (method === 'whatsapp') {
+      return 'Coordinado por WhatsApp';
+    }
+
     if (this.selectedBills().length > 0) {
       return `Efectivo — vuelto de ${this.store.formatPrice(this.vuelto())}`;
     }
@@ -106,16 +125,49 @@ export class CheckoutComponent {
       return;
     }
 
+    this.submitError.set('');
     this.confirming.set(true);
-    await new Promise(r => setTimeout(r, 1200));
-    this.orderNumber.set('A' + Math.floor(1000 + Math.random() * 9000));
-    this.confirming.set(false);
-    this.screen.set('confirmed');
+
+    try {
+      // 1. Resolver almuerzo_id para cada item del carrito
+      const almuerzoRequests = this.store.cart().map(item => 
+        firstValueFrom(this.pedidosService.getOrCreateAlmuerzo(item.selectedProtein.id, item.menuItem.apiId))
+      );
+      
+      const almuerzos = await Promise.all(almuerzoRequests);
+
+      // 2. Preparar el pedido
+      const pedidoPayload: PedidoPayload = {
+        estado: this.paymentMethod() || 'pendiente',
+        sugerencia: this.buildOrderSuggestion(),
+      };
+
+      const detallesPayload: Omit<DetallePedidoPayload, 'pedidoid'>[] = this.store.cart().map((item, index) => ({
+        almuerzoid: almuerzos[index].id,
+        cantidad: item.quantity,
+        precio_unitario: item.menuItem.price,
+        total: item.menuItem.price * item.quantity,
+      }));
+
+      await firstValueFrom(
+        this.pedidosService.crearPedidoConDetalles(pedidoPayload, detallesPayload)
+      );
+
+      this.orderNumber.set(`A${Date.now().toString().slice(-6)}`);
+      this.screen.set('confirmed');
+    } catch (err) {
+      console.error('Error al confirmar pedido:', err);
+      this.submitError.set(
+        'No fue posible enviar el pedido a la API. Verifica tu sesión e inténtalo de nuevo.'
+      );
+    } finally {
+      this.confirming.set(false);
+    }
   }
 
   sendWhatsApp() {
     const items = this.store.cart()
-      .map(i => `• ${i.quantity}x ${i.menuItem.name} (${i.selectedProtein}) — ${this.store.formatPrice(i.menuItem.price * i.quantity)}`)
+      .map(i => `• ${i.quantity}x ${i.menuItem.name} (${i.selectedProtein.nombre}) — ${this.store.formatPrice(i.menuItem.price * i.quantity)}`)
       .join('\n');
     const cashNote = this.cashSummaryForAdmin ? `\n💵 Pago: ${this.cashSummaryForAdmin}` : '';
     const msg = `Hola Caseritos! 🍽️ Quiero hacer un pedido:\n\n${items}\n\nTotal: ${this.store.formatPrice(this.store.cartTotal())}${cashNote}\n\nMétodo de pago: ${this.paymentLabel}`;
@@ -130,6 +182,7 @@ export class CheckoutComponent {
     this.store.showCheckout.set(false);
     this.screen.set('checkout');
     this.paymentMethod.set(null);
+    this.submitError.set('');
   }
 
   editOrder() {
@@ -137,5 +190,22 @@ export class CheckoutComponent {
     this.store.showCartPanel.set(true);
   }
 
-  get firstItem() { return this.store.cart()[0] ?? null; }
+  get firstItem() {
+    return this.store.cart()[0] ?? null;
+  }
+
+  private buildOrderSuggestion(): string {
+    const items = this.store.cart()
+      .map((item) => `${item.quantity}x ${item.menuItem.name} (${item.selectedProtein.nombre})`)
+      .join(', ');
+
+    const extras = [
+      `Metodo de pago: ${this.paymentLabel}`,
+      this.paymentMethod() === 'efectivo' ? this.cashSummaryForAdmin : '',
+      this.paymentMethod() === 'nequi' ? `Referencia Nequi: ${this.nequiRef().trim()}` : '',
+      `Total: ${this.store.formatPrice(this.store.cartTotal())}`,
+    ].filter(Boolean);
+
+    return `Pedido web: ${items}. ${extras.join('. ')}`;
+  }
 }

@@ -40,7 +40,7 @@
             <div class="cart-item">
               <div class="cart-item__info">
                 <strong class="cart-item__name">{{ item.menuItem.name }}</strong>
-                <span class="cart-item__protein">{{ item.selectedProtein }}</span>
+                <span class="cart-item__protein">{{ item.selectedProtein.nombre }}</span>
                 <span class="cart-item__price">
                   {{ store.formatPrice(item.menuItem.price * item.quantity) }}
                 </span>

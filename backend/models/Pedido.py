@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String, Date, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from models.base import Base
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 class Pedido(Base):
     __tablename__ = "pedido"
     id = Column(Integer,primary_key=True)
-    fecha_creacion = Column(Date)
-    estado = Column(Boolean)
+    fecha_creacion = Column(DateTime, default=datetime.utcnow())
+    estado = Column(String) # nequi, efectivo, confirmado, entregado, cancelado
     sugerencia = Column(String)
     usuario_id = Column(Integer,ForeignKey('usuario.id'))
 

@@ -30,7 +30,7 @@
             <div class="co-summary-row">
               <div class="co-summary-info">
                 <strong>{{ item.menuItem.name }}</strong>
-                <span>{{ item.selectedProtein }}</span>
+                <span>{{ item.selectedProtein.nombre }}</span>
               </div>
               <div class="co-summary-right">
                 <span class="co-qty">×{{ item.quantity }}</span>
@@ -211,6 +211,10 @@
           }
         </button>
 
+        @if (submitError()) {
+          <p class="co-footer-note">{{ submitError() }}</p>
+        }
+
         <p class="co-footer-note">
           Tu pedido entra a preparación una vez lo confirmemos contigo 🍽️
         </p>
@@ -242,7 +246,7 @@
           @for (item of store.cart(); track item.id) {
             <div class="confirmed-row">
               <span>🍽️ {{ item.menuItem.name }}</span>
-              <strong>{{ item.selectedProtein }}</strong>
+              <strong>{{ item.selectedProtein.nombre }}</strong>
             </div>
           }
           <div class="confirmed-row confirmed-row--payment">

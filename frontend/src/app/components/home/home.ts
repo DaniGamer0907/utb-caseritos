@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { Store } from '../services/status/store';
-import { HomeMenuItem, HomeMenuService } from '../services/home/home.service';
+import { Store } from '../../services/status/store';
+import { HomeMenuItem, HomeMenuService } from '../../services/home/home.service';
 import { MenuCardComponent } from './menu-card/menu-card.component';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @Component({
   selector: 'app-home',

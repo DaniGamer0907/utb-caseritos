@@ -1,8 +1,8 @@
 import { Component, Input, inject, signal, OnInit } from '@angular/core';
 import { CommonModule,} from '@angular/common';
-import { Store } from '../../services/status/store';
-import { CartStore } from '../../services/cart/cart-store';
-import { HomeMenuItem } from '../../services/home/home.service';
+import { Store } from '../../../services/status/store';
+import { CartStore } from '../../../services/cart/cart-store';
+import { HomeMenuItem } from '../../../services/home/home.service';
 
 @Component({
   selector: 'app-menu-card',

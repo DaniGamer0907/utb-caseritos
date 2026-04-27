@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartStore } from '../services/cart/cart-store';
+import { CartStore } from '../../../services/cart/cart-store';
 
 @Component({
   selector: 'app-cart-panel',

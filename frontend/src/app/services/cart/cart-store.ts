@@ -2,10 +2,11 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeMenuItem } from '../home/home.service';
 import { AuthService } from '../auth/auth-service';
+
 export interface CartItem {
   id: string;
   menuItem: HomeMenuItem;
-  selectedProtein: string;
+  selectedProtein: { id: number; nombre: string };
   quantity: number;
 }
 
@@ -43,13 +44,13 @@ export class CartStore {
 
   constructor() {
     // Restaurar sesión si ya hay token guardado
-    const token = localStorage.getItem('token');
-    const name = localStorage.getItem('userName');
-    const email = localStorage.getItem('userEmail');
-    if (token && name && email) {
-      this.isAuthenticated.set(true);
-      this.user.set({ name, email });
-    }
+    // const token = localStorage.getItem('token');
+    // const name = localStorage.getItem('userName');
+    // const email = localStorage.getItem('userEmail');
+    // if (token && name && email) {
+    //   this.isAuthenticated.set(true);
+    //   this.user.set({ name, email });
+    // }
   }
 
   // ── Modal ─────────────────────────────────────────
@@ -112,16 +113,16 @@ export class CartStore {
   }
 
   // ── Cart ──────────────────────────────────────────
-  addToCart(menuItem: HomeMenuItem, selectedProtein: string) {
+  addToCart(menuItem: HomeMenuItem, selectedProtein: { id: number; nombre: string }) {
     const existing = this.cart().find(
-      i => i.menuItem.id === menuItem.id && i.selectedProtein === selectedProtein
+      i => i.menuItem.id === menuItem.id && i.selectedProtein.id === selectedProtein.id
     );
     if (existing) {
       this.updateQuantity(existing.id, existing.quantity + 1);
     } else {
       this.cart.update(items => [
         ...items,
-        { id: `${menuItem.id}-${selectedProtein}-${Date.now()}`, menuItem, selectedProtein, quantity: 1 },
+        { id: `${menuItem.id}-${selectedProtein.id}-${Date.now()}`, menuItem, selectedProtein, quantity: 1 },
       ]);
     }
   }
@@ -145,7 +146,7 @@ export class CartStore {
 
   buildWhatsAppMessage(): string {
     const lines = this.cart()
-      .map(i => `• ${i.quantity}x ${i.menuItem.name} (${i.selectedProtein}) — ${this.formatPrice(i.menuItem.price * i.quantity)}`)
+      .map(i => `• ${i.quantity}x ${i.menuItem.name} (${i.selectedProtein.nombre}) — ${this.formatPrice(i.menuItem.price * i.quantity)}`)
       .join('\n');
     return `Hola! Quiero hacer un pedido:\n\n${lines}\n\nTotal: ${this.formatPrice(this.cartTotal())}`;
   }

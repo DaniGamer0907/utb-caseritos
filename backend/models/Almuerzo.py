@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from models.base import Base
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 class Almuerzo(Base):
     __tablename__ = "almuerzo"
     id = Column(Integer,primary_key=True)
-    fecha = Column(Date)
+    fecha = Column(DateTime, default=datetime.utcnow())
     proteinaid = Column(Integer, ForeignKey('proteina.id'))
     tipalmuerzo = Column(Integer,ForeignKey('tipoalmuerzo.id'))
 

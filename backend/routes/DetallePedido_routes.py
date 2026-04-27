@@ -11,6 +11,8 @@ router = APIRouter(prefix="/detallesPedido", tags=["Detalles de Pedidos"])
 @router.post("/crearDetallesPedido", dependencies=[Depends(require_cliente)])
 def crear_detalle_de_pedido(detalle_pedido: DetallePedidoC, db: Session = Depends(get_db)):
     pedidodb = DetallePedido(
+        pedidoid=detalle_pedido.pedidoid,
+        almuerzoid=detalle_pedido.almuerzoid,
         cantidad=detalle_pedido.cantidad,
         precio_unitario=detalle_pedido.precio_unitario,
         total=detalle_pedido.total

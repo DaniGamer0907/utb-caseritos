@@ -17,7 +17,7 @@ export class MenuCardComponent implements OnInit {
 
   @Input({ required: true }) item!: HomeMenuItem;
 
-  selectedProtein = signal<string>('');
+  selectedProtein = signal<{ id: number; nombre: string } | null>(null);
   isAdded = signal(false);
 
   ngOnInit(): void {
@@ -26,17 +26,20 @@ export class MenuCardComponent implements OnInit {
     }
   }
 
-  setProtein(protein: string): void {
+  setProtein(protein: { id: number; nombre: string }): void {
     this.selectedProtein.set(protein);
   }
 
   handleAddToCart(): void {
+    const protein = this.selectedProtein();
+    if (!protein) return;
+
     if (!this.cartStore.isAuthenticated()) {
       // Si no está autenticado, abre el modal de login
       this.cartStore.openLogin();
       return;
     }
-    this.cartStore.addToCart(this.item, this.selectedProtein());
+    this.cartStore.addToCart(this.item, protein);
     this.isAdded.set(true);
     // Abre el panel del carrito para que vea que se agregó
     this.cartStore.showCartPanel.set(true);

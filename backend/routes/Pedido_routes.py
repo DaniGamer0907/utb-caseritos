@@ -15,6 +15,8 @@ def crear_pedido(pedido: PedidoC, db: Session = Depends(get_db), current_user: U
         fecha_creacion=pedido.fecha_creacion or Pedido.fecha_creacion.default.arg, # type: ignore
         estado=pedido.estado,
         sugerencia=pedido.sugerencia,
+        total=pedido.total,
+        pago_id=pedido.pago_id,
         usuario_id=current_user.id
     )
     db.add(pedidodb)
@@ -50,6 +52,8 @@ def actualizar_pedido(id: int, nuevo_pedido: PedidoC, db: Session = Depends(get_
         pedidos.fecha_creacion = nuevo_pedido.fecha_creacion #type: ignore
         pedidos.estado = nuevo_pedido.estado #type: ignore
         pedidos.sugerencia = nuevo_pedido.sugerencia #type: ignore
+        pedidos.total = nuevo_pedido.total #type: ignore
+        pedidos.pago_id = nuevo_pedido.pago_id #type: ignore
         db.commit()
         return {"mensaje": "Pedido actualizado correctamente"}
 

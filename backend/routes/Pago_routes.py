@@ -10,10 +10,16 @@ router = APIRouter(prefix="/Pago", tags=["Pagos"])
 
 @router.post("/crearPago", dependencies=[Depends(require_cliente)])
 def crear_pago(pago: PagoC, db: Session = Depends(get_db)):
-    pagodb = Pago(metodopago=pago.metodopago, diadelpago=pago.diadelpago)
+    pagodb = Pago(
+        metodopago=pago.metodopago, 
+        diadelpago=pago.diadelpago,
+        monto=pago.monto,
+        referencia=pago.referencia
+    )
     db.add(pagodb)
     db.commit()
-    return {"mensaje": "Pago agregado correctamente"}
+    db.refresh(pagodb)
+    return {"mensaje": "Pago agregado correctamente", "id": pagodb.id}
 
 
 @router.get("/listPagos", dependencies=[Depends(require_cliente)])
@@ -42,6 +48,8 @@ def actualizar_pago(id: int, nuevo_pago: PagoC, db: Session = Depends(get_db)):
     else:
         pagos.metodopago = nuevo_pago.metodopago  # type: ignore
         pagos.diadelpago = nuevo_pago.diadelpago  # type: ignore
+        pagos.monto = nuevo_pago.monto # type: ignore
+        pagos.referencia = nuevo_pago.referencia # type: ignore
         db.commit()
         return {"mensaje": "Pago actualizado correctamente"}
 

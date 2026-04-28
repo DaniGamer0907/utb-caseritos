@@ -3,13 +3,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './routes/app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration, withEventReplay, withNoHttpTransferCache } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideClientHydration(withEventReplay())
+    provideClientHydration(withEventReplay(), withNoHttpTransferCache())
   ]
 };

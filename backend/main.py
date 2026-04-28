@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models.base import Base
 from db import engine
+from dotenv import load_dotenv
+import os
 
 from models.Rol import Rol
 from routes.auth import router as auth_router
@@ -12,11 +14,19 @@ from routes.Pedido_routes import router as pedido_router
 from routes.DetallePedido_routes import router as detalle_router
 from routes.Pago_routes import router as pago_router
 
+load_dotenv()
+
 app = FastAPI(title="API Caseritos")
+
+cors_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "http://localhost:4200").split(",")
+    if origin.strip()
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"], # El puerto de Angular
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

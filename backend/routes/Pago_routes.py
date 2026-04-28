@@ -2,10 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db import get_db
 from models.Pago import Pago
+from models.Pedido import Pedido
 from schemas.Pago_schemas import PagoC
-from auth.dependencies import require_cliente
+from auth.dependencies import get_current_user, require_cliente
 
 router = APIRouter(prefix="/Pago", tags=["Pagos"])
+
+
+def _obtener_pago_visible(db: Session, pago_id: int, current_user: dict) -> Pago | None:
+    query = db.query(Pago).filter(Pago.id == pago_id)
+    if current_user["role"] != "admin":
+        query = query.join(Pedido, Pedido.pago_id == Pago.id).filter(Pedido.usuario_id == current_user["user"].id)
+    return query.first()
 
 
 @router.post("/crearPago", dependencies=[Depends(require_cliente)])
@@ -23,8 +31,14 @@ def crear_pago(pago: PagoC, db: Session = Depends(get_db)):
 
 
 @router.get("/listPagos", dependencies=[Depends(require_cliente)])
-def obtener_pagos(db: Session = Depends(get_db)):
-    pagos = db.query(Pago).all()
+def obtener_pagos(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    query = db.query(Pago)
+    if current_user["role"] != "admin":
+        query = query.join(Pedido, Pedido.pago_id == Pago.id).filter(Pedido.usuario_id == current_user["user"].id)
+    pagos = query.all()
     if not pagos:
         raise HTTPException(status_code=404, detail="Pagos no encontrados")
     else:
@@ -32,8 +46,12 @@ def obtener_pagos(db: Session = Depends(get_db)):
 
 
 @router.get("/getPago", dependencies=[Depends(require_cliente)])
-def obtener_pago(id: int, db: Session = Depends(get_db)):
-    pagos = db.query(Pago).filter(Pago.id == id).first()
+def obtener_pago(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pagos = _obtener_pago_visible(db, id, current_user)
     if not pagos:
         raise HTTPException(status_code=404, detail="Pago no encontrado")
     else:
@@ -41,8 +59,13 @@ def obtener_pago(id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/actualizarPago", dependencies=[Depends(require_cliente)])
-def actualizar_pago(id: int, nuevo_pago: PagoC, db: Session = Depends(get_db)):
-    pagos = db.query(Pago).filter(Pago.id == id).first()
+def actualizar_pago(
+    id: int,
+    nuevo_pago: PagoC,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pagos = _obtener_pago_visible(db, id, current_user)
     if not pagos:
         raise HTTPException(status_code=404, detail="Pago no encontrado")
     else:
@@ -55,8 +78,12 @@ def actualizar_pago(id: int, nuevo_pago: PagoC, db: Session = Depends(get_db)):
 
 
 @router.delete("/borrarPago", dependencies=[Depends(require_cliente)])
-def eliminar_pago(id: int, db: Session = Depends(get_db)):
-    pagos = db.query(Pago).filter(Pago.id == id).first()
+def eliminar_pago(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pagos = _obtener_pago_visible(db, id, current_user)
     if not pagos:
         raise HTTPException(status_code=404, detail="Pago no encontrado")
     else:

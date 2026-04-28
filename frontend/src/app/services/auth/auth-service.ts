@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { tap } from 'rxjs';
+import { API_BASE_URL } from '../api/api-config';
 
 interface LoginResponse {
   access_token: string;
@@ -21,7 +22,7 @@ interface JwtPayload {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly url = 'http://localhost:8000/auth';
+  private readonly url = `${API_BASE_URL}/auth`;
 
   login(user: string, pass: string) {
     const body = new URLSearchParams();

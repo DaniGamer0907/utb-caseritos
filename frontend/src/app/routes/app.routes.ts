@@ -6,16 +6,16 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RoleGuard } from '../guards/role.guard';
 
 export const routes: Routes = [
-  {
-    path: 'logni',
-    component: Login,
-    title: 'login',
-  },
-  {
-    path: 'registrar',
-    component: Registrar,
-    title: 'Register',
-  },
+  // {
+  //   path: 'logni',
+  //   component: Login,
+  //   title: 'login',
+  // },
+  // {
+  //   path: 'registrar',
+  //   component: Registrar,
+  //   title: 'Register',
+  // },
   {
     path: '',
     component: Home,

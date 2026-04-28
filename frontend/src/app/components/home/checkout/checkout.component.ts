@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CartStore } from '../../../services/cart/cart-store';
-import { DetallePedidoPayload, PedidoPayload, PedidosService } from '../../../services/pedidos/pedidos-service';
+import { DetallePedidoPayload, PagoPayload, PedidoPayload, PedidosService } from '../../../services/pedidos/pedidos-service';
 
 type PaymentMethod = 'efectivo' | 'nequi' | 'whatsapp' | null;
 
@@ -129,13 +129,25 @@ export class CheckoutComponent {
     this.confirming.set(true);
 
     try {
-      // 1. Resolver almuerzo_id para cada item del carrito
+      const total = this.store.cartTotal();
+
+      // 1. Preparar Payload de Pedido
       const pedidoPayload: PedidoPayload = {
-        estado: this.paymentMethod() || 'pendiente',
+        estado: 'pendiente',
         sugerencia: this.buildOrderSuggestion(),
+        total: total,
       };
 
-      const detallesPayload: Omit<DetallePedidoPayload, 'pedidoid'>[] = this.store.cart().map((item, index) => ({
+      // 2. Preparar Payload de Pago
+      const pagoPayload: PagoPayload = {
+        metodopago: this.paymentMethod() || 'efectivo',
+        diadelpago: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+        monto: total,
+        referencia: this.paymentMethod() === 'nequi' ? this.nequiRef().trim() : undefined
+      };
+
+      // 3. Preparar Detalles
+      const detallesPayload: Omit<DetallePedidoPayload, 'pedidoid'>[] = this.store.cart().map((item) => ({
         proteinaid: item.selectedProtein.id,
         tipalmuerzoid: item.menuItem.apiId,
         cantidad: item.quantity,
@@ -144,7 +156,7 @@ export class CheckoutComponent {
       }));
 
       await firstValueFrom(
-        this.pedidosService.crearPedidoConDetalles(pedidoPayload, detallesPayload)
+        this.pedidosService.crearPedidoConDetalles(pedidoPayload, detallesPayload, pagoPayload)
       );
 
       this.orderNumber.set(`A${Date.now().toString().slice(-6)}`);

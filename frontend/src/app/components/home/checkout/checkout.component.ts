@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CartStore } from '../../../services/cart/cart-store';
-import { DetallePedidoPayload, PagoPayload, PedidoPayload, PedidosService } from '../../../services/pedidos/pedidos-service';
+import { CheckoutDetallePayload, CheckoutPagoPayload, PedidosService } from '../../../services/pedidos/pedidos-service';
 
 type PaymentMethod = 'efectivo' | 'nequi' | 'whatsapp' | null;
 
@@ -129,34 +129,24 @@ export class CheckoutComponent {
     this.confirming.set(true);
 
     try {
-      const total = this.store.cartTotal();
-
-      // 1. Preparar Payload de Pedido
-      const pedidoPayload: PedidoPayload = {
-        estado: 'pendiente',
-        sugerencia: this.buildOrderSuggestion(),
-        total: total,
-      };
-
-      // 2. Preparar Payload de Pago
-      const pagoPayload: PagoPayload = {
+      const pagoPayload: CheckoutPagoPayload = {
         metodopago: this.paymentMethod() || 'efectivo',
         diadelpago: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-        monto: total,
         referencia: this.paymentMethod() === 'nequi' ? this.nequiRef().trim() : undefined
       };
 
-      // 3. Preparar Detalles
-      const detallesPayload: Omit<DetallePedidoPayload, 'pedidoid'>[] = this.store.cart().map((item) => ({
+      const detallesPayload: CheckoutDetallePayload[] = this.store.cart().map((item) => ({
         proteinaid: item.selectedProtein.id,
         tipalmuerzoid: item.menuItem.apiId,
         cantidad: item.quantity,
-        precio_unitario: item.menuItem.price,
-        total: item.menuItem.price * item.quantity,
       }));
 
       await firstValueFrom(
-        this.pedidosService.crearPedidoConDetalles(pedidoPayload, detallesPayload, pagoPayload)
+        this.pedidosService.crearPedido({
+          sugerencia: this.buildOrderSuggestion(),
+          pago: pagoPayload,
+          detalles: detallesPayload,
+        })
       );
 
       this.orderNumber.set(`A${Date.now().toString().slice(-6)}`);

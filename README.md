@@ -1,22 +1,29 @@
 # UTB Caseritos
 
-Aplicacion web para gestionar y promocionar el restaurante **Caseritos**. El proyecto esta dividido en un frontend en Angular y un backend en FastAPI con autenticacion JWT y persistencia en PostgreSQL.
+Sistema web para el restaurante **Caseritos**. El repositorio esta dividido en tres capas:
+
+- **Frontend** en Angular, desplegado en **Vercel**.
+- **API** en FastAPI, desplegada en **Render**.
+- **Base de datos** PostgreSQL administrada en **Supabase**.
+
+La aplicacion permite ver el menu, autenticarse, registrar usuarios y gestionar pedidos desde el backend.
 
 ## Arquitectura
 
-- `frontend/`: interfaz web en Angular 21.
-- `backend/`: API REST en FastAPI.
-- `backend/models/`: modelos SQLAlchemy.
-- `backend/routes/`: rutas para autenticacion y CRUD del sistema.
-- `backend/schemas/`: esquemas Pydantic para validacion de datos.
+```text
+frontend/  -> Angular 21 + SSR
+backend/   -> FastAPI + SQLAlchemy + JWT
+Supabase   -> PostgreSQL
+Render     -> API publica
+Vercel     -> Frontend publico
+```
 
-## Funcionalidades actuales
+## Flujo general
 
-- Inicio de sesion con JWT.
-- Registro de usuarios.
-- Vista publica tipo landing page para el restaurante.
-- CRUD base para usuarios, proteinas, tipos de almuerzo, almuerzos, pedidos, detalles de pedido y pagos.
-- Validaciones de acceso por rol en algunas rutas del backend.
+1. El usuario entra al frontend publicado en Vercel.
+2. El frontend consulta la API hospedada en Render.
+3. La API valida autenticacion con JWT y aplica reglas por rol.
+4. Los datos se guardan y leen desde PostgreSQL en Supabase.
 
 ## Tecnologias
 
@@ -24,6 +31,7 @@ Aplicacion web para gestionar y promocionar el restaurante **Caseritos**. El pro
 
 - Angular 21
 - TypeScript
+- Angular Material
 - Bootstrap 5
 
 ### Backend
@@ -31,55 +39,136 @@ Aplicacion web para gestionar y promocionar el restaurante **Caseritos**. El pro
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
-- Passlib
-- Python-Jose
-- Python-Dotenv
+- JWT con `python-jose`
+- Hash de contrasenas con `passlib`
 
-## Requisitos
+### Infraestructura
 
-- Node.js y npm
-- Python 3.10 o superior
-- PostgreSQL
+- Supabase para la base de datos
+- Render para la API
+- Vercel para el frontend
 
-## Variables de entorno del backend
+## Estructura del proyecto
 
-El backend depende de un archivo `.env` dentro de `backend/` o de variables de entorno equivalentes.
+### `backend/`
+
+- `main.py`: arranque de la API, CORS y registro de rutas.
+- `db.py`: conexion a PostgreSQL usando variables de entorno.
+- `models/`: modelos ORM de SQLAlchemy.
+- `routes/`: endpoints REST.
+- `schemas/`: validacion de entrada y salida con Pydantic.
+- `auth/`: hashing, JWT y dependencias de autenticacion.
+
+### `frontend/`
+
+- `src/app/components/`: vistas principales como login, registro y home.
+- `src/app/services/`: servicios para consumir la API.
+- `src/app/guards/`: proteccion de rutas.
+- `src/app/admin/`: modulo administrativo cargado por lazy loading.
+- `src/app/services/api/api-config.ts`: URL base de la API desplegada.
+
+## Funcionalidades
+
+- Inicio de sesion con JWT.
+- Registro de usuarios.
+- Visualizacion del menu del restaurante.
+- Gestion de pedidos.
+- Administracion de productos relacionados con el menu.
+- Control de acceso por rol para rutas administrativas.
+
+## Rutas principales del frontend
+
+- `/`: pagina principal.
+- `/logni`: login.
+- `/registrar`: registro.
+- `/admin`: area administrativa protegida.
+
+## Rutas principales del backend
+
+### Salud
+
+- `GET /` -> verifica que la API este activa.
+
+### Autenticacion
+
+- `POST /auth/login`
+- `POST /auth/registro`
+
+### Recursos
+
+- `/usuario`
+- `/proteina`
+- `/tipoalmuerzo`
+- `/pedido`
+- `/detallesPedido`
+- `/Pago`
+
+## Base de datos
+
+La base de datos es PostgreSQL en Supabase. El backend se conecta mediante variables de entorno y crea las tablas al iniciar con `Base.metadata.create_all(bind=engine)`.
+
+Entidades principales:
+
+- `Usuario`
+- `Rol`
+- `Proteina`
+- `TipoAlmuerzo`
+- `Pedido`
+- `DetallePedido`
+- `Pago`
+
+## Variables de entorno
+
+### Backend `backend/.env`
 
 ```env
 DB_USER=tu_usuario
 DB_PASSWORD=tu_password
-DB_HOST=localhost
+DB_HOST=tu-host.supabase.co
 DB_PORT=5432
 DB_NAME=tu_base_de_datos
 SECRET_KEY=una_clave_secreta
 ALGORITHM=HS256
 EXPIRE_MINUTES=60
+CORS_ORIGINS=https://tu-frontend.vercel.app,http://localhost:4200
 ```
 
-## Instalacion
+### Frontend
 
-### 1. Frontend
+La URL de la API se define en:
+
+- `frontend/src/app/services/api/api-config.ts`
+
+Actualmente apunta a:
+
+```ts
+export const API_BASE_URL = 'https://utb-caseritos.onrender.com';
+```
+
+Si cambias el dominio de Render, actualiza ese archivo.
+
+## Instalacion local
+
+### 1. Clonar e instalar frontend
 
 ```bash
 cd frontend
 npm install
 ```
 
-### 2. Backend
+### 2. Instalar backend
 
-Las dependencias Python del backend estan definidas en `requirements.txt` en la raiz del proyecto.
+Desde la carpeta `backend/`:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-Opcionalmente, puedes crear y activar un entorno virtual antes de instalar dependencias.
-
-## Ejecucion en desarrollo
+## Ejecucion local
 
 ### Backend
 
-Desde la carpeta `backend/`:
+Desde `backend/`:
 
 ```bash
 uvicorn main:app --reload
@@ -87,12 +176,12 @@ uvicorn main:app --reload
 
 La API queda disponible en:
 
-- `http://localhost:8000/`
+- `http://localhost:8000`
 - `http://localhost:8000/docs`
 
 ### Frontend
 
-Desde la carpeta `frontend/`:
+Desde `frontend/`:
 
 ```bash
 npm start
@@ -100,75 +189,35 @@ npm start
 
 La aplicacion queda disponible en:
 
-- `http://localhost:4200/`
+- `http://localhost:4200`
 
-## Integracion frontend-backend
+## Despliegue
 
-- El frontend consume autenticacion en `http://localhost:8000/auth`.
-- El backend permite CORS para `http://localhost:4200`.
-- Si cambias puertos o dominios, debes actualizar ambos lados.
+### Render
 
-## Rutas principales del frontend
+La API se despliega como servicio web en Render. Debe tener configuradas las variables de entorno del backend y el comando de arranque correspondiente a FastAPI/uvicorn.
 
-- `/`: login
-- `/Registrar`: registro de usuario
-- `/home`: pagina principal del restaurante
+### Supabase
 
-## Rutas principales del backend
+Supabase hospeda la base de datos PostgreSQL. El backend usa la cadena de conexion configurada en `backend/.env`.
 
-### Autenticacion
+### Vercel
 
-- `POST /auth/login`
-- `POST /auth/registro`
+El frontend se publica en Vercel. Debe apuntar a la URL publica de la API en Render.
 
-### Modulos CRUD
+## Autenticacion y roles
 
-- `/usuario`
-- `/proteina`
-- `/tipoalmuerzo`
-- `/almuerzo`
-- `/pedido`
-- `/detallesPedido`
-- `/Pago`
+- El login usa `application/x-www-form-urlencoded`.
+- El backend retorna un `access_token` JWT y el rol del usuario.
+- El frontend guarda `token` y `role` en `localStorage`.
+- Las rutas administrativas usan guards para bloquear acceso sin sesion o sin rol `admin`.
 
-## Modelo de dominio
+## Notas tecnicas
 
-Las entidades principales del sistema son:
+- El backend habilita CORS para los orígenes definidos en `CORS_ORIGINS`.
+- La API crea tablas automaticamente al iniciar.
+- El proyecto contiene archivos generados por Angular y Python cacheados localmente; no forman parte de la logica del sistema.
 
-- `Usuario`
-- `Rol`
-- `Proteina`
-- `TipoAlmuerzo`
-- `Almuerzo`
-- `Pedido`
-- `DetallePedido`
-- `Pago`
+## Estado del proyecto
 
-## Notas importantes
-
-- Las tablas se crean automaticamente al iniciar el backend con `Base.metadata.create_all(bind=engine)`.
-- La ruta raiz del backend responde con `{"message": "API funcionando"}`.
-- El login espera credenciales en formato `application/x-www-form-urlencoded`.
-- El proyecto contiene algunos textos con problemas de codificacion en la interfaz y en respuestas del backend; no afecta este README, pero conviene corregirlo despues.
-
-## Estructura del proyecto
-
-```text
-utb-caseritos/
-|-- backend/
-|   |-- auth/
-|   |-- models/
-|   |-- routes/
-|   |-- schemas/
-|   |-- db.py
-|   `-- main.py
-|-- frontend/
-|   |-- src/
-|   |-- angular.json
-|   `-- package.json
-`-- README.md
-```
-
-## Estado actual
-
-El repositorio ya tiene la base funcional para autenticacion, gestion de usuarios y administracion de almuerzos y pedidos, pero todavia requiere estandarizar dependencias, mejorar validaciones y completar documentacion tecnica mas detallada si se va a desplegar o mantener en equipo.
+El repositorio ya tiene una base funcional para autenticacion, catalogo y pedidos. Si se va a mantener en equipo, el siguiente paso razonable es centralizar las URLs de entorno, estandarizar nombres de rutas y documentar el contrato de cada endpoint.

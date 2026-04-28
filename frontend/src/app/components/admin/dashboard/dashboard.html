@@ -1,0 +1,65 @@
+<section class="stats-grid">
+  <div class="stat-card stat-total">
+    <div class="stat-label">Total Pedidos</div>
+    <div class="stat-value">{{ totalPedidos() }}</div>
+    <div class="stat-sub">Hoy</div>
+    <div class="stat-icon">📋</div>
+  </div>
+  <div class="stat-card stat-prep">
+    <div class="stat-label">En Preparación</div>
+    <div class="stat-value">{{ enPreparacion() }}</div>
+    <div class="stat-sub">Activos</div>
+    <div class="stat-icon">⏳</div>
+  </div>
+  <div class="stat-card stat-done">
+    <div class="stat-label">Entregados</div>
+    <div class="stat-value">{{ entregados() }}</div>
+    <div class="stat-sub">Completados hoy</div>
+    <div class="stat-icon">✅</div>
+  </div>
+</section>
+
+@if (error()) {
+  <div class="msg msg-error">⚠️ {{ error() }}</div>
+}
+
+@if (isLoading()) {
+  <p style="color:#9A856B; padding: 16px;">Cargando pedidos...</p>
+} @else {
+  <section class="orders-section">
+    <div class="section-header">
+      <div class="tab-group">
+        <button type="button" class="tab" [class.active]="filtro() === 'todos'"       (click)="setFiltro('todos')">
+          Todos
+        </button>
+        <button type="button" class="tab" [class.active]="filtro() === 'pendiente'"   (click)="setFiltro('pendiente')">
+          Pendientes <span class="tab-count">{{ pendientes() }}</span>
+        </button>
+        <button type="button" class="tab" [class.active]="filtro() === 'preparacion'" (click)="setFiltro('preparacion')">
+          En Preparación <span class="tab-count">{{ enPreparacion() }}</span>
+        </button>
+        <button type="button" class="tab" [class.active]="filtro() === 'entregado'"   (click)="setFiltro('entregado')">
+          Entregados <span class="tab-count">{{ entregados() }}</span>
+        </button>
+      </div>
+    </div>
+
+    @if (pedidosFiltrados().length === 0) {
+      <p style="color:#9A856B; padding: 16px;">No hay pedidos en esta categoría.</p>
+    } @else {
+      <div class="orders-grid">
+        @for (pedido of pedidosFiltrados(); track pedido.id) {
+          <div class="order-card">
+            <div class="order-header">
+              <strong>#{{ pedido.id }}</strong>
+              <span class="order-badge estado-{{ pedido.estado }}">{{ estadoLabel(pedido.estado) }}</span>
+            </div>
+            <p class="order-items">{{ pedido.sugerencia || 'Sin sugerencia' }}</p>
+            <p class="order-total">${{ pedido.total | number }}</p>
+            <p style="font-size:12px; color:#9A856B;">{{ pedido.fecha_creacion }}</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+}

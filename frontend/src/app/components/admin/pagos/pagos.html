@@ -1,0 +1,35 @@
+<section class="module-shell">
+  <div class="module-head">
+    <div>
+      <h2>Pagos</h2>
+      <p>Historial de pagos registrados por los clientes.</p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="msg msg-error">⚠️ {{ error() }}</div>
+  }
+
+  @if (isLoading()) {
+    <p style="color:#9A856B; padding: 16px;">Cargando pagos...</p>
+  } @else {
+    @if (pagos().length === 0) {
+      <p style="color:#9A856B; padding: 16px;">No hay pagos registrados todavía.</p>
+    } @else {
+      <div class="payments-grid">
+        @for (pago of pagos(); track pago.id) {
+          <div class="payment-card">
+            <strong>Pago #{{ pago.id }}</strong>
+            <p>Método: {{ pago.metodopago }}</p>
+            <p>Monto: ${{ pago.monto | number }}</p>
+            <p style="font-size:12px; color:#9A856B;">Fecha: {{ pago.diadelpago }}</p>
+            @if (pago.referencia) {
+              <p style="font-size:12px; color:#9A856B;">Ref: {{ pago.referencia }}</p>
+            }
+            <span class="payment-badge paid">Registrado</span>
+          </div>
+        }
+      </div>
+    }
+  }
+</section>

@@ -4,7 +4,7 @@ from db import get_db
 from models.Pago import Pago
 from models.Pedido import Pedido
 from schemas.Pago_schemas import PagoC
-from auth.dependencies import get_current_user, require_cliente
+from auth.dependencies import get_current_user, require_admin, require_cliente
 
 router = APIRouter(prefix="/Pago", tags=["Pagos"])
 
@@ -16,8 +16,10 @@ def _obtener_pago_visible(db: Session, pago_id: int, current_user: dict) -> Pago
     return query.first()
 
 
-@router.post("/crearPago", dependencies=[Depends(require_cliente)])
+@router.post("/crearPago", dependencies=[Depends(require_admin)])
 def crear_pago(pago: PagoC, db: Session = Depends(get_db)):
+    if pago.monto <= 0:
+        raise HTTPException(status_code=400, detail="El monto del pago debe ser mayor que 0")
     pagodb = Pago(
         metodopago=pago.metodopago, 
         diadelpago=pago.diadelpago,

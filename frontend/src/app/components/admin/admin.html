@@ -1,0 +1,155 @@
+<div class="admin-layout">
+  <!-- Overlay móvil -->
+  <div class="sidebar-overlay" [class.open]="isSidebarOpen" (click)="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="isSidebarOpen">
+    <div class="sidebar-brand">
+      <div class="brand-mark">C</div>
+      <div>
+        <h2 class="brand-name">Caseritos</h2>
+        <p class="brand-subtitle">Restaurante casero colombiano</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['dashboard']"
+        (click)="closeSidebar()">
+        <span>🏠</span>
+        <span>Dashboard</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['pedidos']"
+        (click)="closeSidebar()">
+        <span>🧾</span>
+        <span>Pedidos</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['clientes']"
+        (click)="closeSidebar()">
+        <span>👥</span>
+        <span>Clientes</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['menu']"
+        (click)="closeSidebar()">
+        <span>🍽️</span>
+        <span>Menú</span>
+      </button>
+
+      <div class="nav-group-title">Gestión</div>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['proteina']"
+        (click)="closeSidebar()">
+        <span>🥩</span>
+        <span>Proteína</span>
+        <small>Crear · editar · eliminar</small>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['almuerzo']"
+        (click)="closeSidebar()">
+        <span>🍛</span>
+        <span>Almuerzo</span>
+        <small>Crear · editar · eliminar</small>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['pagos']"
+        (click)="closeSidebar()">
+        <span>💳</span>
+        <span>Pagos recibidos</span>
+        <small>Registrar cobros</small>
+      </button>
+
+      <div class="nav-group-title">Sistema</div>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['reportes']"
+        (click)="closeSidebar()">
+        <span>📊</span>
+        <span>Reportes</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        routerLinkActive="active"
+        [routerLink]="['configuracion']"
+        (click)="closeSidebar()">
+        <span>⚙️</span>
+        <span>Configuración</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-card">
+      <span>🌿</span>
+      <p><strong>Hecho con amor</strong><br>como en casa</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">MG</div>
+      <div>
+        <strong>María García</strong>
+        <p>Admin</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-content">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="menu-btn" (click)="toggleSidebar()">☰</button>
+        <h1 class="page-title">Dashboard Caseritos</h1>
+      </div>
+
+      <div class="topbar-right">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" placeholder="Buscar pedidos, clientes...">
+        </div>
+
+        <button type="button" class="new-order-btn" [routerLink]="['proteina']">+ Nueva proteína</button>
+        <button type="button" class="new-lunch-btn" [routerLink]="['almuerzo']">+ Nuevo almuerzo</button>
+        <button type="button" class="new-fill-btn"  [routerLink]="['pagos']">+ Pagos recibidos</button>
+
+        <button type="button" class="notif-btn">
+          <span>🔔</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Aquí se renderizan los componentes hijo -->
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,61 @@
+<section class="module-shell">
+  <div class="module-head">
+    <div>
+      <h2>Almuerzos</h2>
+      <p>Crear, editar y eliminar tipos de almuerzo del menú.</p>
+    </div>
+    <button type="button" class="module-primary" (click)="cancelar()">+ Nuevo almuerzo</button>
+  </div>
+
+  @if (error()) {
+    <div class="msg msg-error">⚠️ {{ error() }}</div>
+  }
+  @if (exito()) {
+    <div class="msg msg-ok">✅ {{ exito() }}</div>
+  }
+
+  @if (isLoading()) {
+    <p style="color:#9A856B; padding: 16px;">Cargando almuerzos...</p>
+  } @else {
+    <div class="module-grid">
+      <div class="module-list">
+        @if (almuerzos().length === 0) {
+          <p style="color:#9A856B;">No hay almuerzos registrados.</p>
+        }
+        @for (a of almuerzos(); track a.id) {
+          <div class="module-card">
+            <div>
+              <strong>{{ a.nombre }}</strong>
+              <p style="font-size:13px; color:#9A856B;">{{ a.descripcion }}</p>
+              <p><strong>${{ a.precio | number }}</strong></p>
+            </div>
+            <div class="module-actions">
+              <button type="button" class="action-btn"        (click)="editarAlmuerzo(a)">Editar</button>
+              <button type="button" class="action-btn danger" (click)="eliminar(a.id)">Eliminar</button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="module-form">
+        <h3>{{ modoFormulario === 'crear' ? 'Crear almuerzo' : 'Editar almuerzo' }}</h3>
+
+        <label>Nombre</label>
+        <input type="text" placeholder="Ej: Bandeja paisa" [(ngModel)]="form.nombre">
+
+        <label>Descripción</label>
+        <input type="text" placeholder="Ej: Arroz, frijoles, chicharrón..." [(ngModel)]="form.descripcion">
+
+        <label>Precio</label>
+        <input type="number" placeholder="0" [(ngModel)]="form.precio">
+
+        <div class="module-actions bottom">
+          <button type="button" class="action-btn"    (click)="cancelar()">Cancelar</button>
+          <button type="button" class="module-primary" (click)="guardar()" [disabled]="isSaving()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

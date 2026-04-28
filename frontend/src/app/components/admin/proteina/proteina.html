@@ -1,0 +1,64 @@
+<section class="module-shell">
+  <div class="module-head">
+    <div>
+      <h2>Proteínas</h2>
+      <p>Crear, editar y eliminar proteínas del menú.</p>
+    </div>
+    <button type="button" class="module-primary" (click)="cancelar()">+ Nueva proteína</button>
+  </div>
+
+  @if (error()) {
+    <div class="msg msg-error">⚠️ {{ error() }}</div>
+  }
+  @if (exito()) {
+    <div class="msg msg-ok">✅ {{ exito() }}</div>
+  }
+
+  @if (isLoading()) {
+    <p style="color:#9A856B; padding: 16px;">Cargando proteínas...</p>
+  } @else {
+    <div class="module-grid">
+      <div class="module-list">
+        @if (proteinas().length === 0) {
+          <p style="color:#9A856B;">No hay proteínas registradas.</p>
+        }
+        @for (p of proteinas(); track p.id) {
+          <div class="module-card">
+            <div>
+              <strong>{{ p.nombre }}</strong>
+              <p>
+                <span [style.color]="p.avaliable ? '#3E6B25' : '#B42318'">
+                  {{ p.avaliable ? '✔ Disponible' : '✖ No disponible' }}
+                </span>
+              </p>
+            </div>
+            <div class="module-actions">
+              <button type="button" class="action-btn"        (click)="editarProteina(p)">Editar</button>
+              <button type="button" class="action-btn danger" (click)="eliminar(p.id)">Eliminar</button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="module-form">
+        <h3>{{ modoFormulario === 'crear' ? 'Crear proteína' : 'Editar proteína' }}</h3>
+
+        <label>Nombre</label>
+        <input type="text" placeholder="Ej: Cerdo asado" [(ngModel)]="form.nombre">
+
+        <label>Disponibilidad</label>
+        <select [(ngModel)]="form.avaliable">
+          <option [ngValue]="1">Disponible</option>
+          <option [ngValue]="0">No disponible</option>
+        </select>
+
+        <div class="module-actions bottom">
+          <button type="button" class="action-btn"    (click)="cancelar()">Cancelar</button>
+          <button type="button" class="module-primary" (click)="guardar()" [disabled]="isSaving()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

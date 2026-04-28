@@ -3,10 +3,17 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.Pedido import Pedido
 from schemas.Pedido_schemas import PedidoC
-from auth.dependencies import require_cliente
+from auth.dependencies import get_current_user, require_cliente
 from models.Usuario import Usuario
 
 router = APIRouter(prefix="/pedido", tags=["Pedidos"])
+
+
+def _obtener_pedido_visible(db: Session, pedido_id: int, current_user: dict) -> Pedido | None:
+    query = db.query(Pedido).filter(Pedido.id == pedido_id)
+    if current_user["role"] != "admin":
+        query = query.filter(Pedido.usuario_id == current_user["user"].id)
+    return query.first()
 
 
 @router.post("/crearPedido", dependencies=[Depends(require_cliente)])
@@ -26,8 +33,14 @@ def crear_pedido(pedido: PedidoC, db: Session = Depends(get_db), current_user: U
 
 
 @router.get("/listPedidos", dependencies=[Depends(require_cliente)])
-def obtener_pedidos(db: Session = Depends(get_db)):
-    pedidos = db.query(Pedido).all()
+def obtener_pedidos(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    query = db.query(Pedido)
+    if current_user["role"] != "admin":
+        query = query.filter(Pedido.usuario_id == current_user["user"].id)
+    pedidos = query.all()
     if not pedidos:
         raise HTTPException(status_code=404, detail="Pedidos no encontrados")
     else:
@@ -35,8 +48,12 @@ def obtener_pedidos(db: Session = Depends(get_db)):
 
 
 @router.get("/getPedido", dependencies=[Depends(require_cliente)])
-def obtener_pedido(id: int, db: Session = Depends(get_db)):
-    pedidos = db.query(Pedido).filter(Pedido.id == id).first()
+def obtener_pedido(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pedidos = _obtener_pedido_visible(db, id, current_user)
     if not pedidos:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
     else:
@@ -44,8 +61,13 @@ def obtener_pedido(id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/actualizarPedido", dependencies=[Depends(require_cliente)])
-def actualizar_pedido(id: int, nuevo_pedido: PedidoC, db: Session = Depends(get_db)):
-    pedidos = db.query(Pedido).filter(Pedido.id == id).first()
+def actualizar_pedido(
+    id: int,
+    nuevo_pedido: PedidoC,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pedidos = _obtener_pedido_visible(db, id, current_user)
     if not pedidos:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
     else:
@@ -59,8 +81,12 @@ def actualizar_pedido(id: int, nuevo_pedido: PedidoC, db: Session = Depends(get_
 
 
 @router.delete("/borrarPedido", dependencies=[Depends(require_cliente)])
-def eliminar_pedido(id: int, db: Session = Depends(get_db)):
-    pedidos = db.query(Pedido).filter(Pedido.id == id).first()
+def eliminar_pedido(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pedidos = _obtener_pedido_visible(db, id, current_user)
     if not pedidos:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
     else:

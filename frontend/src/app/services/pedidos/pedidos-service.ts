@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { API_BASE_URL } from '../api/api-config';
 
 export interface PedidoPayload {
   fecha_creacion?: string;
@@ -38,7 +39,7 @@ export interface ApiMessageResponse {
 export class PedidosService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly apiUrl = 'http://localhost:8000';
+  private readonly apiUrl = API_BASE_URL;
 
   crearPedido(payload: PedidoPayload): Observable<ApiMessageResponse> {
     return this.http.post<ApiMessageResponse>(

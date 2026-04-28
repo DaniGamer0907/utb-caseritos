@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
+import { API_BASE_URL } from '../api/api-config';
 
 interface TipoAlmuerzoApi {
   id: number;
@@ -30,7 +31,7 @@ export interface HomeMenuItem {
 })
 export class HomeMenuService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8000';
+  private readonly apiUrl = API_BASE_URL;
   private readonly defaultImage =
     'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-eMu5FvGyMG2rfjj8KO2AfRXCw0tzTo.png';
   private readonly defaultDescription =

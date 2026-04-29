@@ -1,6 +1,5 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../api/api-config';
 
@@ -57,41 +56,13 @@ export interface ApiMessageResponse {
 })
 export class PedidosService {
   private readonly http = inject(HttpClient);
-  private readonly platformId = inject(PLATFORM_ID);
   private readonly apiUrl = API_BASE_URL;
 
   crearPedido(payload: CheckoutPayload): Observable<ApiMessageResponse> {
-    return this.http.post<ApiMessageResponse>(
-      `${this.apiUrl}/pedido/crearPedido`,
-      payload,
-      { headers: this.buildHeaders() }
-    );
+    return this.http.post<ApiMessageResponse>(`${this.apiUrl}/pedido/crearPedido`, payload);
   }
 
   actualizarPedido(id: number, payload: PedidoPayload): Observable<ApiMessageResponse> {
-    return this.http.put<ApiMessageResponse>(
-      `${this.apiUrl}/pedido/actualizarPedido?id=${id}`,
-      payload,
-      { headers: this.buildHeaders() }
-    );
-  }
-
-  private buildHeaders(): HttpHeaders {
-    const token = this.getStorage()?.getItem('token');
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
-
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return headers;
-  }
-
-  private getStorage(): Storage | null {
-    if (!isPlatformBrowser(this.platformId)) {
-      return null;
-    }
-
-    return localStorage;
+    return this.http.put<ApiMessageResponse>(`${this.apiUrl}/pedido/actualizarPedido?id=${id}`, payload);
   }
 }

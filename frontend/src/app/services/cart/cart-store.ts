@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeMenuItem } from '../home/home.service';
 import { AuthService } from '../auth/auth-service';
@@ -35,22 +35,19 @@ export class CartStore {
   readonly showCheckout = signal(false);
 
   readonly cartCount = computed(() =>
-    this.cart().reduce((sum, i) => sum + i.quantity, 0)
+    this.cart().reduce((sum, item) => sum + item.quantity, 0)
   );
 
   readonly cartTotal = computed(() =>
-    this.cart().reduce((sum, i) => sum + i.menuItem.price * i.quantity, 0)
+    this.cart().reduce((sum, item) => sum + item.menuItem.price * item.quantity, 0)
   );
 
   constructor() {
-    // Restaurar sesión si ya hay token guardado
-    // const token = localStorage.getItem('token');
-    // const name = localStorage.getItem('userName');
-    // const email = localStorage.getItem('userEmail');
-    // if (token && name && email) {
-    //   this.isAuthenticated.set(true);
-    //   this.user.set({ name, email });
-    // }
+    effect(() => {
+      const currentUser = this.authService.getUser();
+      this.isAuthenticated.set(!!currentUser);
+      this.user.set(currentUser);
+    });
   }
 
   // ── Modal ─────────────────────────────────────────
@@ -72,15 +69,7 @@ export class CartStore {
   login(email: string, password: string): Promise<boolean> {
     return new Promise((resolve) => {
       this.authService.login(email, password).subscribe({
-        next: (res: any) => {
-          localStorage.setItem('token', res.access_token);
-          localStorage.setItem('role', res.role);
-          localStorage.setItem('userEmail', email);
-          // Usa el nombre del email si no viene en la respuesta
-          const name = res.name ?? email.split('@')[0];
-          localStorage.setItem('userName', name);
-          this.isAuthenticated.set(true);
-          this.user.set({ name, email, role: res.role });
+        next: (res: { role: string }) => {
           resolve(true);
           if (res.role === 'admin') {
             this.router.navigate(['/admin']);
@@ -105,12 +94,7 @@ export class CartStore {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userEmail');
-    this.isAuthenticated.set(false);
-    this.user.set(null);
+    this.authService.logout();
     this.cart.set([]);
     this.router.navigate(['/']);
   }
@@ -118,39 +102,56 @@ export class CartStore {
   // ── Cart ──────────────────────────────────────────
   addToCart(menuItem: HomeMenuItem, selectedProtein: { id: number; nombre: string }) {
     const existing = this.cart().find(
-      i => i.menuItem.id === menuItem.id && i.selectedProtein.id === selectedProtein.id
+      (item) => item.menuItem.id === menuItem.id && item.selectedProtein.id === selectedProtein.id
     );
+
     if (existing) {
       this.updateQuantity(existing.id, existing.quantity + 1);
-    } else {
-      this.cart.update(items => [
-        ...items,
-        { id: `${menuItem.id}-${selectedProtein.id}-${Date.now()}`, menuItem, selectedProtein, quantity: 1 },
-      ]);
+      return;
     }
+
+    this.cart.update((items) => [
+      ...items,
+      { id: `${menuItem.id}-${selectedProtein.id}-${Date.now()}`, menuItem, selectedProtein, quantity: 1 },
+    ]);
   }
 
   updateQuantity(itemId: string, qty: number) {
-    if (qty <= 0) this.removeFromCart(itemId);
-    else this.cart.update(items => items.map(i => i.id === itemId ? { ...i, quantity: qty } : i));
+    if (qty <= 0) {
+      this.removeFromCart(itemId);
+      return;
+    }
+
+    this.cart.update((items) =>
+      items.map((item) => item.id === itemId ? { ...item, quantity: qty } : item)
+    );
   }
 
   removeFromCart(itemId: string) {
-    this.cart.update(items => items.filter(i => i.id !== itemId));
+    this.cart.update((items) => items.filter((item) => item.id !== itemId));
   }
 
-  clearCart() { this.cart.set([]); }
+  clearCart() {
+    this.cart.set([]);
+  }
 
-  toggleCartPanel() { this.showCartPanel.update(v => !v); }
+  toggleCartPanel() {
+    this.showCartPanel.update((value) => !value);
+  }
 
   formatPrice(value: number): string {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+    }).format(value);
   }
 
   buildWhatsAppMessage(): string {
     const lines = this.cart()
-      .map(i => `• ${i.quantity}x ${i.menuItem.name} (${i.selectedProtein.nombre}) — ${this.formatPrice(i.menuItem.price * i.quantity)}`)
+      .map((item) => `• ${item.quantity}x ${item.menuItem.name} (${item.selectedProtein.nombre}) — ${this.formatPrice(item.menuItem.price * item.quantity)}`)
       .join('\n');
+
     return `Hola! Quiero hacer un pedido:\n\n${lines}\n\nTotal: ${this.formatPrice(this.cartTotal())}`;
   }
 }

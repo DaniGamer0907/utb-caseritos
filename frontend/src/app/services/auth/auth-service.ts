@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { tap } from 'rxjs';
 import { API_BASE_URL } from '../api/api-config';
 
@@ -8,12 +8,21 @@ interface LoginResponse {
   access_token: string;
   token_type: string;
   role: string;
+  name: string;
 }
 
 interface JwtPayload {
   sub?: string;
   role?: string;
   exp?: number;
+}
+
+export interface AuthSession {
+  token: string;
+  role: string;
+  email: string;
+  name: string;
+  exp: number;
 }
 
 @Injectable({
@@ -23,6 +32,11 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly url = `${API_BASE_URL}/auth`;
+  readonly session = signal<AuthSession | null>(null);
+
+  constructor() {
+    this.restoreSession();
+  }
 
   login(user: string, pass: string) {
     const body = new URLSearchParams();
@@ -37,14 +51,21 @@ export class AuthService {
       tap((response) => {
         const payload = this.decodeToken(response.access_token);
         const role = payload?.role ?? response.role;
-        const storage = this.getStorage();
+        const exp = payload?.exp;
+        const email = payload?.sub ?? user;
 
-        if (!storage) {
+        if (!role || !exp || !email) {
+          this.logout();
           return;
         }
 
-        storage.setItem('token', response.access_token);
-        storage.setItem('role', role ?? '');
+        this.persistSession({
+          token: response.access_token,
+          role,
+          email,
+          name: response.name.trim() || email.split('@')[0],
+          exp,
+        });
       })
     );
   }
@@ -54,23 +75,33 @@ export class AuthService {
   }
 
   getRol(): string | null {
-    if (!this.isLoggedIn()) {
+    return this.isLoggedIn() ? this.session()?.role ?? null : null;
+  }
+
+  getToken(): string | null {
+    return this.isLoggedIn() ? this.session()?.token ?? null : null;
+  }
+
+  getUser() {
+    const currentSession = this.session();
+    if (!currentSession || !this.isLoggedIn()) {
       return null;
     }
 
-    return this.getStorage()?.getItem('role') ?? null;
+    return {
+      name: currentSession.name,
+      email: currentSession.email,
+      role: currentSession.role,
+    };
   }
 
   isLoggedIn(): boolean {
-    const token = this.getStorage()?.getItem('token');
-    if (!token) {
+    const currentSession = this.session();
+    if (!currentSession) {
       return false;
     }
 
-    const payload = this.decodeToken(token);
-    const exp = payload?.exp;
-
-    if (!payload || !exp || Date.now() >= exp * 1000) {
+    if (Date.now() >= currentSession.exp * 1000) {
       this.logout();
       return false;
     }
@@ -79,6 +110,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.session.set(null);
     const storage = this.getStorage();
     if (!storage) {
       return;
@@ -86,6 +118,46 @@ export class AuthService {
 
     storage.removeItem('token');
     storage.removeItem('role');
+    storage.removeItem('userName');
+  }
+
+  private restoreSession(): void {
+    const storage = this.getStorage();
+    const token = storage?.getItem('token');
+
+    if (!storage || !token) {
+      this.session.set(null);
+      return;
+    }
+
+    const payload = this.decodeToken(token);
+    const role = payload?.role ?? storage.getItem('role');
+    const email = payload?.sub;
+    const exp = payload?.exp;
+
+    if (!role || !email || !exp || Date.now() >= exp * 1000) {
+      this.logout();
+      return;
+    }
+
+    this.session.set({
+      token,
+      role,
+      email,
+      name: storage.getItem('userName') ?? email.split('@')[0],
+      exp,
+    });
+  }
+
+  private persistSession(session: AuthSession): void {
+    const storage = this.getStorage();
+    if (storage) {
+      storage.setItem('token', session.token);
+      storage.setItem('role', session.role);
+      storage.setItem('userName', session.name);
+    }
+
+    this.session.set(session);
   }
 
   private getStorage(): Storage | null {

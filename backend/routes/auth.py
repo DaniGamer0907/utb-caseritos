@@ -23,7 +23,8 @@ def login(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     return {
         "access_token": token,
         "token_type": "bearer",
-        "role": role
+        "role": role,
+        "name": usuario.nombre,
     }
 
 @router.post("/registro")

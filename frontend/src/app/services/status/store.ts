@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class Store {
     readonly brand = 'Caseritos';
-    readonly whatsappNumber = '573016221347';
+    readonly whatsappNumber = '573016380266';
     readonly featureCards = [
     {
       icon: 'S',

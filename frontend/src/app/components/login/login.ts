@@ -23,7 +23,7 @@ export class Login {
         if (role === 'admin') {
           this.router.navigate(['/admin']);
         } else {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/']);
         }
       },
       error: (err) => alert('Error: ' + err.error.detail),

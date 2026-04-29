@@ -167,7 +167,7 @@ export class CheckoutComponent {
       .join('\n');
     const cashNote = this.cashSummaryForAdmin ? `\n💵 Pago: ${this.cashSummaryForAdmin}` : '';
     const msg = `Hola Caseritos! 🍽️ Quiero hacer un pedido:\n\n${items}\n\nTotal: ${this.store.formatPrice(this.store.cartTotal())}${cashNote}\n\nMétodo de pago: ${this.paymentLabel}`;
-    window.open(`https://wa.me/573016221347?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573016380266?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
     // Mostrar confirmación igual
     this.orderNumber.set('A' + Math.floor(1000 + Math.random() * 9000));
     this.screen.set('confirmed');

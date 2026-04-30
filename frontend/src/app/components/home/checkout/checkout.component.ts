@@ -141,7 +141,7 @@ export class CheckoutComponent {
         cantidad: item.quantity,
       }));
 
-      await firstValueFrom(
+      const response = await firstValueFrom(
         this.pedidosService.crearPedido({
           sugerencia: this.buildOrderSuggestion(),
           pago: pagoPayload,
@@ -149,7 +149,8 @@ export class CheckoutComponent {
         })
       );
 
-      this.orderNumber.set(`A${Date.now().toString().slice(-6)}`);
+      this.pedidosService.notifyPedidosChanged();
+      this.orderNumber.set(String(response.id ?? `A${Date.now().toString().slice(-6)}`));
       this.screen.set('confirmed');
     } catch (err) {
       console.error('Error al confirmar pedido:', err);

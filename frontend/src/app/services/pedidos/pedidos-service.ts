@@ -1,7 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../api/api-config';
+
+export interface Pedido {
+  id: number;
+  fecha_creacion: string;
+  estado: string;
+  sugerencia: string;
+  total: number;
+  pago_id?: number;
+  usuario_id: number;
+}
 
 export interface PedidoPayload {
   fecha_creacion?: string;
@@ -57,6 +67,15 @@ export interface ApiMessageResponse {
 export class PedidosService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = API_BASE_URL;
+  readonly refreshTick = signal(0);
+
+  listPedidos(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.apiUrl}/pedido/listPedidos`);
+  }
+
+  notifyPedidosChanged(): void {
+    this.refreshTick.update((value) => value + 1);
+  }
 
   crearPedido(payload: CheckoutPayload): Observable<ApiMessageResponse> {
     return this.http.post<ApiMessageResponse>(`${this.apiUrl}/pedido/crearPedido`, payload);

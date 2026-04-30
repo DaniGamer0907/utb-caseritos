@@ -3,11 +3,12 @@ import { Store } from '../../services/status/store';
 import { HomeMenuItem, HomeMenuService } from '../../services/home/home.service';
 import { MenuCardComponent } from './menu-card/menu-card.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { Pedidos } from './pedidos/pedidos';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MenuCardComponent, NavbarComponent], 
+  imports: [MenuCardComponent, NavbarComponent, Pedidos], 
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

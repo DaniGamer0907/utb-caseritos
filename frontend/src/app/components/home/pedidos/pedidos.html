@@ -1,0 +1,58 @@
+<section class="orders-section" id="mis-pedidos">
+  <div class="container orders-shell">
+    <div class="orders-header">
+      <div>
+        <span class="orders-eyebrow">Historial personal</span>
+        <h2>Mis pedidos</h2>
+        <p>Consulta el estado de tus pedidos recientes sin salir del inicio.</p>
+      </div>
+
+      @if (isLoggedIn()) {
+        <div class="orders-count">
+          {{ pedidos().length }} pedidos
+        </div>
+      }
+    </div>
+
+    @if (!isLoggedIn()) {
+      <article class="orders-empty-state">
+        <strong>Inicia sesion para ver tus pedidos</strong>
+        <p>Cuando tengas una sesion activa, aqui apareceran tus pedidos mas recientes.</p>
+      </article>
+    } @else if (isLoading()) {
+      <article class="orders-feedback-card">
+        <div class="orders-spinner"></div>
+        <p>Cargando tus pedidos...</p>
+      </article>
+    } @else if (errorMessage()) {
+      <article class="orders-feedback-card orders-feedback-card--error">
+        <strong>No pudimos cargar tus pedidos</strong>
+        <p>{{ errorMessage() }}</p>
+      </article>
+    } @else if (pedidos().length === 0) {
+      <article class="orders-empty-state">
+        <strong>Aun no tienes pedidos registrados</strong>
+        <p>Haz tu primer pedido y lo veras listado aqui con su estado y total.</p>
+      </article>
+    } @else {
+      <div class="orders-grid">
+        @for (pedido of pedidos(); track trackByPedidoId($index, pedido)) {
+          <article class="order-card">
+            <div class="order-card__top">
+              <strong>Pedido #{{ pedido.id }}</strong>
+              <span class="order-badge order-badge--{{ pedido.estado }}">{{ estadoLabel(pedido.estado) }}</span>
+            </div>
+
+            <p class="order-card__hint">
+              {{ pedido.fecha_creacion | date:'mediumDate' }} - {{ store.formatPrice(pedido.total) }}
+            </p>
+
+            <p class="order-card__note">
+              {{ pedido.sugerencia || 'Sin observaciones registradas para este pedido.' }}
+            </p>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -313,21 +313,31 @@
 .feature-panel-right {
   background: #2d5a27;
   color: white;
-  padding: 28px 24px;
   border-radius: 28px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  height: 277.39px;
+  align-items: stretch;
+  flex-direction: row;
   gap: 0;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   position: relative;
   overflow: hidden;
+  margin: 0;
+  padding:0;
 }
 
 .feature-text {
   flex: 1;
   z-index: 1;
+  padding: 20px;
+  overflow: hidden;
   padding-right: 8px;
+  position:relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }
 
 .feature-text h3 {
@@ -348,18 +358,21 @@
 .feature-text p {
   font-size: 0.88rem;
   opacity: 0.9;
-  line-height: 1.6;
-  max-width: 200px;
+  line-height: 1.5;
+  max-width: 95%;
+  overflow-wrap: break-word;
 }
 
 /* Imagen de verduras */
 .fresh-img-wrap {
-  position: absolute;
+  position: relative;
   right: 0;
   top: 0;
   bottom: 0;
-  width: 52%;
   display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
   align-items: flex-end;
   justify-content: flex-end;
 }
@@ -370,6 +383,7 @@
   object-fit: cover;
   opacity: 0.75;
   border-radius: 0 28px 28px 0;
+  object-position: center right;
 }
 
 .fresh-badge {
@@ -447,12 +461,6 @@
     padding: 28px 20px;
   }
 
-  .feature-panel-right {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .feature-text p { max-width: 100%; }
 }
 
 

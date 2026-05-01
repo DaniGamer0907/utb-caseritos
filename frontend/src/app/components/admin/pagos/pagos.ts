@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService, Pago } from '../../../services/admin/admin.service';
 
@@ -7,6 +7,8 @@ import { AdminService, Pago } from '../../../services/admin/admin.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './pagos.html',
+  styleUrl: './pagos.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class PagosComponent implements OnInit {
   private readonly adminService = inject(AdminService);

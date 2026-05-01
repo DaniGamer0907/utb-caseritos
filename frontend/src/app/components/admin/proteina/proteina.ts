@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, Proteina, ProteinaPayload } from '../../../services/admin/admin.service';
@@ -8,6 +8,8 @@ import { AdminService, Proteina, ProteinaPayload } from '../../../services/admin
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './proteina.html',
+  styleUrl: './proteina.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class ProteinaComponent implements OnInit {
   private readonly adminService = inject(AdminService);

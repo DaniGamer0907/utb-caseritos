@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, TipoAlmuerzo, TipoAlmuerzoPayload } from '../../../services/admin/admin.service';
@@ -8,6 +8,8 @@ import { AdminService, TipoAlmuerzo, TipoAlmuerzoPayload } from '../../../servic
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './almuerzo.html',
+  styleUrl: './almuerzo.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class AlmuerzoComponent implements OnInit {
   private readonly adminService = inject(AdminService);

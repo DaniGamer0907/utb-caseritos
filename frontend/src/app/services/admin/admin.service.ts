@@ -46,6 +46,7 @@ export interface Pedido {
   total: number;
   pago_id?: number;
   usuario_id: number;
+  nombre_usuario?:string;
 }
 
 export interface ApiResponse {
@@ -71,6 +72,14 @@ export class AdminService {
     return this.http.post<ApiResponse>(
       `${this.apiUrl}/proteina/crearProteina`,
       payload,
+      { headers: this.buildHeaders() }
+    );
+  }
+
+  actualizarEstadoPedido(id: number, estado: string): Observable<ApiResponse> {
+    return this.http.patch<ApiResponse>(
+      `${this.apiUrl}/pedido/actualizarEstado?id=${id}&estado=${encodeURIComponent(estado)}`,
+      {},
       { headers: this.buildHeaders() }
     );
   }

@@ -1,65 +1,93 @@
-<section class="stats-grid">
-  <div class="stat-card stat-total">
-    <div class="stat-label">Total Pedidos</div>
-    <div class="stat-value">{{ totalPedidos() }}</div>
-    <div class="stat-sub">Hoy</div>
-    <div class="stat-icon">📋</div>
-  </div>
-  <div class="stat-card stat-prep">
-    <div class="stat-label">En Preparación</div>
-    <div class="stat-value">{{ enPreparacion() }}</div>
-    <div class="stat-sub">Activos</div>
-    <div class="stat-icon">⏳</div>
-  </div>
-  <div class="stat-card stat-done">
-    <div class="stat-label">Entregados</div>
-    <div class="stat-value">{{ entregados() }}</div>
-    <div class="stat-sub">Completados hoy</div>
-    <div class="stat-icon">✅</div>
-  </div>
-</section>
+<div class="dashboard-shell">
 
-@if (error()) {
-  <div class="msg msg-error">⚠️ {{ error() }}</div>
-}
+  @if (isLoading()) {
+    <div class="dashboard-loading">Cargando pedidos...</div>
+  } @else if (error()) {
+    <div class="dashboard-loading">{{ error() }}</div>
+  } @else {
 
-@if (isLoading()) {
-  <p style="color:#9A856B; padding: 16px;">Cargando pedidos...</p>
-} @else {
-  <section class="orders-section">
-    <div class="section-header">
-      <div class="tab-group">
-        <button type="button" class="tab" [class.active]="filtro() === 'todos'"       (click)="setFiltro('todos')">
-          Todos
-        </button>
-        <button type="button" class="tab" [class.active]="filtro() === 'pendiente'"   (click)="setFiltro('pendiente')">
-          Pendientes <span class="tab-count">{{ pendientes() }}</span>
-        </button>
-        <button type="button" class="tab" [class.active]="filtro() === 'preparacion'" (click)="setFiltro('preparacion')">
-          En Preparación <span class="tab-count">{{ enPreparacion() }}</span>
-        </button>
-        <button type="button" class="tab" [class.active]="filtro() === 'entregado'"   (click)="setFiltro('entregado')">
-          Entregados <span class="tab-count">{{ entregados() }}</span>
-        </button>
+    <div class="stats-grid">
+      <div class="stat-card stat-total">
+        <span class="stat-icon">🧾</span>
+        <span class="stat-label">Total</span>
+        <span class="stat-value">{{ totalPedidos() }}</span>
+        <span class="stat-sub">pedidos registrados</span>
+      </div>
+      <div class="stat-card stat-prep">
+        <span class="stat-icon">🍳</span>
+        <span class="stat-label">En preparación</span>
+        <span class="stat-value">{{ enPreparacion() }}</span>
+        <span class="stat-sub">en cocina ahora</span>
+      </div>
+      <div class="stat-card stat-done">
+        <span class="stat-icon">✅</span>
+        <span class="stat-label">Entregados</span>
+        <span class="stat-value">{{ entregados() }}</span>
+        <span class="stat-sub">completados hoy</span>
       </div>
     </div>
 
-    @if (pedidosFiltrados().length === 0) {
-      <p style="color:#9A856B; padding: 16px;">No hay pedidos en esta categoría.</p>
-    } @else {
-      <div class="orders-grid">
-        @for (pedido of pedidosFiltrados(); track pedido.id) {
-          <div class="order-card">
-            <div class="order-header">
-              <strong>#{{ pedido.id }}</strong>
-              <span class="order-badge estado-{{ pedido.estado }}">{{ estadoLabel(pedido.estado) }}</span>
-            </div>
-            <p class="order-items">{{ pedido.sugerencia || 'Sin sugerencia' }}</p>
-            <p class="order-total">${{ pedido.total | number }}</p>
-            <p style="font-size:12px; color:#9A856B;">{{ pedido.fecha_creacion }}</p>
-          </div>
-        }
+    <div class="orders-section">
+      <div class="section-header">
+        <div class="tab-group">
+          <button class="tab" [class.active]="filtro() === 'todos'" (click)="setFiltro('todos')">
+            Todos <span class="tab-count">{{ totalPedidos() }}</span>
+          </button>
+          <button class="tab" [class.active]="filtro() === 'pendiente'" (click)="setFiltro('pendiente')">
+            Pendientes <span class="tab-count">{{ pendientes() }}</span>
+          </button>
+          <button class="tab" [class.active]="filtro() === 'en preparación'" (click)="setFiltro('en preparación')">
+            En preparación <span class="tab-count">{{ enPreparacion() }}</span>
+          </button>
+          <button class="tab" [class.active]="filtro() === 'entregado'" (click)="setFiltro('entregado')">
+            Entregados <span class="tab-count">{{ entregados() }}</span>
+          </button>
+        </div>
       </div>
-    }
-  </section>
-}
+
+      @if (pedidosFiltrados().length === 0) {
+        <div class="dashboard-empty">No hay pedidos en esta categoría.</div>
+      } @else {
+        <div class="orders-grid">
+          @for (pedido of pedidosFiltrados(); track pedido.id) {
+            <div class="order-card">
+
+              <div class="order-header">
+                <strong>#{{ pedido.id }}</strong>
+                <span class="order-badge" [ngClass]="estadoClass(pedido.estado)">
+                  {{ estadoLabel(pedido.estado) }}
+                </span>
+              </div>
+
+              <div class="order-items">👤 {{ pedido.nombre_usuario ?? 'Usuario #' + pedido.usuario_id }}</div>
+              <div class="order-items">📅 {{ pedido.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</div>
+              @if (pedido.sugerencia) {
+                <div class="order-items">📝 {{ pedido.sugerencia }}</div>
+              }
+              <div class="order-total">${{ pedido.total }}</div>
+
+              <div class="order-acciones">
+                @if (pedido.estado === 'pendiente') {
+                  <button class="btn-accion btn-avanzar" (click)="cambiarEstado(pedido, 'en preparación')">
+                    Pasar a preparación
+                  </button>
+                }
+                @if (pedido.estado === 'en preparación') {
+                  <button class="btn-accion btn-retroceder" (click)="cambiarEstado(pedido, 'pendiente')">
+                    ← Pendiente
+                  </button>
+                  <button class="btn-accion btn-avanzar" (click)="cambiarEstado(pedido, 'entregado')">
+                    Entregado ✓
+                  </button>
+                }
+              </div>
+
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  }
+
+</div>

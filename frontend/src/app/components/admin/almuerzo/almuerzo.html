@@ -1,8 +1,8 @@
 <section class="module-shell">
   <div class="module-head">
-    <div>
-      <h2>Almuerzos</h2>
-      <p>Crear, editar y eliminar tipos de almuerzo del menú.</p>
+    <div class="almuerzo-name-desc">
+      <h2 class="almuerzo-title">Almuerzos</h2>
+      <p class="desc">Crear, editar y eliminar tipos de almuerzo del menú.</p>
     </div>
     <button type="button" class="module-primary" (click)="cancelar()">+ Nuevo almuerzo</button>
   </div>
@@ -24,10 +24,10 @@
         }
         @for (a of almuerzos(); track a.id) {
           <div class="module-card">
-            <div>
-              <strong>{{ a.nombre }}</strong>
-              <p style="font-size:13px; color:#9A856B;">{{ a.descripcion }}</p>
-              <p><strong>${{ a.precio | number }}</strong></p>
+            <div class="desc-almuerzo">
+              <strong class="nombre-almuerzo">{{ a.nombre }}</strong>
+              <p class="descripcion" style="font-size:13px; color:#9A856B;">{{ a.descripcion }}</p>
+              <p><strong class="precio">${{ a.precio | number }}</strong></p>
             </div>
             <div class="module-actions">
               <button type="button" class="action-btn"        (click)="editarAlmuerzo(a)">Editar</button>
@@ -38,15 +38,15 @@
       </div>
 
       <div class="module-form">
-        <h3>{{ modoFormulario === 'crear' ? 'Crear almuerzo' : 'Editar almuerzo' }}</h3>
+        <h3 class="almuerzo-form-title">{{ modoFormulario === 'crear' ? 'Crear almuerzo' : 'Editar almuerzo' }}</h3>
 
-        <label>Nombre</label>
+        <label class="nombre-form">Nombre</label>
         <input type="text" placeholder="Ej: Bandeja paisa" [(ngModel)]="form.nombre">
 
-        <label>Descripción</label>
+        <label class="desc-form">Descripción</label>
         <input type="text" placeholder="Ej: Arroz, frijoles, chicharrón..." [(ngModel)]="form.descripcion">
 
-        <label>Precio</label>
+        <label class="precio-form">Precio</label>
         <input type="number" placeholder="0" [(ngModel)]="form.precio">
 
         <div class="module-actions bottom">

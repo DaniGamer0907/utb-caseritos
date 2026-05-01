@@ -20,7 +20,7 @@ def _obtener_pedido_visible(db: Session, pedido_id: int, current_user: dict) -> 
     return query.first()
 
 
-ESTADOS_PEDIDO_VALIDOS = {"pendiente", "confirmado", "entregado", "cancelado"}
+ESTADOS_PEDIDO_VALIDOS = {"pendiente", "en preparación", "entregado"}
 METODOS_PAGO_VALIDOS = {"efectivo", "nequi"}
 
 
@@ -128,20 +128,37 @@ def crear_pedido(
         "total": total_pedido,
     }
 
-
 @router.get("/listPedidos", dependencies=[Depends(require_cliente)])
 def obtener_pedidos(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
-    query = db.query(Pedido)
+    query = db.query(
+        Pedido,
+        Usuario.nombre.label("nombre_usuario")
+    ).join(Usuario, Pedido.usuario_id == Usuario.id)
+
     if current_user["role"] != "admin":
         query = query.filter(Pedido.usuario_id == current_user["user"].id)
-    pedidos = query.all()
-    if not pedidos:
+
+    resultados = query.all()
+
+    if not resultados:
         raise HTTPException(status_code=404, detail="Pedidos no encontrados")
-    else:
-        return pedidos
+
+    return [
+        {
+            "id": p.id,
+            "fecha_creacion": p.fecha_creacion,
+            "estado": p.estado,
+            "sugerencia": p.sugerencia,
+            "total": p.total,
+            "pago_id": p.pago_id,
+            "usuario_id": p.usuario_id,
+            "nombre_usuario": nombre_usuario,
+        }
+        for p, nombre_usuario in resultados
+    ]
 
 
 @router.get("/getPedido", dependencies=[Depends(require_cliente)])
@@ -177,6 +194,21 @@ def actualizar_pedido(
         db.commit()
         return {"mensaje": "Pedido actualizado correctamente"}
 
+
+@router.patch("/actualizarEstado", dependencies=[Depends(require_admin)])
+def actualizar_estado_pedido(
+    id: int,
+    estado: str,
+    db: Session = Depends(get_db)
+):
+    if estado not in ESTADOS_PEDIDO_VALIDOS:
+        raise HTTPException(status_code=400, detail="Estado inválido")
+    pedido = db.query(Pedido).filter(Pedido.id == id).first()
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido no encontrado")
+    pedido.estado = estado  # type: ignore
+    db.commit()
+    return {"mensaje": "Estado actualizado correctamente"}
 
 @router.delete("/borrarPedido", dependencies=[Depends(require_cliente)])
 def eliminar_pedido(

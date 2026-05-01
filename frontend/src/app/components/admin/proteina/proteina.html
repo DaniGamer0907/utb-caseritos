@@ -1,8 +1,8 @@
 <section class="module-shell">
   <div class="module-head">
-    <div>
-      <h2>Proteínas</h2>
-      <p>Crear, editar y eliminar proteínas del menú.</p>
+    <div class="nombre-desc">
+      <h2 class="Subtitulo">Proteínas</h2>
+      <p class="Texto-subtitulo">Crear, editar y eliminar proteínas del menú.</p>
     </div>
     <button type="button" class="module-primary" (click)="cancelar()">+ Nueva proteína</button>
   </div>
@@ -24,10 +24,10 @@
         }
         @for (p of proteinas(); track p.id) {
           <div class="module-card">
-            <div>
-              <strong>{{ p.nombre }}</strong>
-              <p>
-                <span [style.color]="p.avaliable ? '#3E6B25' : '#B42318'">
+            <div class="proteina-nombre+Disponibilidad">
+              <strong class="proteina-nombre">{{ p.nombre }}</strong>
+              <p class="anuncio-disponible">
+                <span class="disponible" [style.color]="p.avaliable ? '#3E6B25' : '#B42318'">
                   {{ p.avaliable ? '✔ Disponible' : '✖ No disponible' }}
                 </span>
               </p>
@@ -41,12 +41,12 @@
       </div>
 
       <div class="module-form">
-        <h3>{{ modoFormulario === 'crear' ? 'Crear proteína' : 'Editar proteína' }}</h3>
+        <h3 class="formulario-crear">{{ modoFormulario === 'crear' ? 'Crear proteína' : 'Editar proteína' }}</h3>
 
-        <label>Nombre</label>
+        <label class="nombre-proteina">Nombre</label>
         <input type="text" placeholder="Ej: Cerdo asado" [(ngModel)]="form.nombre">
 
-        <label>Disponibilidad</label>
+        <label class="Disponibilidad-name">Disponibilidad</label>
         <select [(ngModel)]="form.avaliable">
           <option [ngValue]="1">Disponible</option>
           <option [ngValue]="0">No disponible</option>

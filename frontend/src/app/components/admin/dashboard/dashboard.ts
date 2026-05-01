@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService, Pedido } from '../../../services/admin/admin.service';
 
@@ -7,17 +7,19 @@ import { AdminService, Pedido } from '../../../services/admin/admin.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard.html',
+  styleUrl: './dashboard.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class DashboardComponent implements OnInit {
   private readonly adminService = inject(AdminService);
 
-  pedidos    = signal<Pedido[]>([]);
-  isLoading  = signal(true);
-  error      = signal('');
-  filtro     = signal('todos');
+  pedidos   = signal<Pedido[]>([]);
+  isLoading = signal(true);
+  error     = signal('');
+  filtro    = signal('todos');
 
   totalPedidos  = computed(() => this.pedidos().length);
-  enPreparacion = computed(() => this.pedidos().filter(p => p.estado === 'preparacion').length);
+  enPreparacion = computed(() => this.pedidos().filter(p => p.estado === 'en preparación').length);
   entregados    = computed(() => this.pedidos().filter(p => p.estado === 'entregado').length);
   pendientes    = computed(() => this.pedidos().filter(p => p.estado === 'pendiente').length);
 
@@ -45,11 +47,32 @@ export class DashboardComponent implements OnInit {
 
   estadoLabel(estado: string): string {
     const labels: Record<string, string> = {
-      pendiente:   'Pendiente',
-      preparacion: 'En preparación',
-      listo:       'Listo',
-      entregado:   'Entregado',
+      'pendiente':      'Pendiente',
+      'en preparación': 'En preparación',
+      'entregado':      'Entregado',
     };
     return labels[estado] ?? estado;
   }
+
+  cambiarEstado(pedido: Pedido, nuevoEstado: string): void {
+    this.adminService.actualizarEstadoPedido(pedido.id, nuevoEstado).subscribe({
+      next: () => {
+        this.pedidos.update(lista =>
+          lista.map(p => p.id === pedido.id ? { ...p, estado: nuevoEstado } : p)
+        );
+      },
+      error: () => {
+        console.error('Error al actualizar el estado del pedido');
+      }
+    });
+  }
+
+  estadoClass(estado: string): string {
+  const clases: Record<string, string> = {
+    'pendiente':      'estado-pendiente',
+    'en preparación': 'estado-preparacion',
+    'entregado':      'estado-entregado',
+  };
+  return clases[estado] ?? '';
+}
 }

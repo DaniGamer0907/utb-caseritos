@@ -1,223 +1,249 @@
-# UTB Caseritos
+<h1 align="center">UTB Caseritos</h1>
 
-Sistema web para el restaurante **Caseritos**. El repositorio esta dividido en tres capas:
+<p align="center">
+  <img alt="Technologies" src="https://img.shields.io/badge/Technologies-Angular%20%7C%20FastAPI%20%7C%20Supabase-111827?style=for-the-badge" />
+  <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-16A34A?style=for-the-badge" />
+  <img alt="Real-world Solution" src="https://img.shields.io/badge/Real--world%20Solution-Yes-F59E0B?style=for-the-badge" />
+</p>
 
-- **Frontend** en Angular, desplegado en **Vercel**.
-- **API** en FastAPI, desplegada en **Render**.
-- **Base de datos** PostgreSQL administrada en **Supabase**.
+<p align="center">
+  Sistema web real para un negocio local de almuerzos en Colombia, pensado para ordenar pedidos dispersos por WhatsApp, centralizar la operacion y dejar trazabilidad tecnica de punta a punta.
+</p>
 
-La aplicacion permite ver el menu, autenticarse, registrar usuarios y gestionar pedidos desde el backend.
+## Demo
 
-## Arquitectura
+- API publica: `https://utb-caseritos.onrender.com`
+- Frontend publico: `https://utb-caseritos.vercel.app`
+- Documentacion API: `https://utb-caseritos.onrender.com/docs`
 
-```text
-frontend/  -> Angular 21 + SSR
-backend/   -> FastAPI + SQLAlchemy + JWT
-Supabase   -> PostgreSQL
-Render     -> API publica
-Vercel     -> Frontend publico
-```
+## Problema vs Solucion
 
-## Flujo general
+| Problema real | Solucion implementada | Habilidad fullstack demostrada |
+| --- | --- | --- |
+| Los pedidos llegaban por WhatsApp y se perdia el control operativo. | El checkout construye el pedido, calcula el total y lo envia a la API. | Diseno de flujo de compra y orquestacion frontend-backend. |
+| Se necesitaba bloquear paneles administrativos. | Angular usa `AuthGuard` y `RoleGuard`, y el backend valida JWT por rol. | Seguridad aplicada en cliente y servidor. |
+| El negocio maneja menu, pedidos y pagos en una sola operacion. | La API modela usuarios, proteinas, tipos de almuerzo, pedidos, detalles y pagos. | Modelado de datos y logica transaccional. |
 
-1. El usuario entra al frontend publicado en Vercel.
-2. El frontend consulta la API hospedada en Render.
-3. La API valida autenticacion con JWT y aplica reglas por rol.
-4. Los datos se guardan y leen desde PostgreSQL en Supabase.
+## Stack Tecnologico
 
-## Tecnologias
+- Angular `21.2.x` con SSR, hydration y router.
+- TypeScript `~5.9.2`.
+- RxJS `~7.8.0`.
+- Angular Material `21.2.8`.
+- Bootstrap `5.3.8`.
+- FastAPI.
+- Uvicorn.
+- SQLAlchemy.
+- psycopg2-binary.
+- python-dotenv.
+- python-jose.
+- passlib `1.7.4` con bcrypt `4.0.1`.
+- Python `3.11.8`.
+- PostgreSQL en Supabase.
+- Render para despliegue de la API.
 
-### Frontend
-
-- Angular 21
-- TypeScript
-- Angular Material
-- Bootstrap 5
+## Flujo de Autenticacion
 
 ### Backend
 
-- FastAPI
-- SQLAlchemy
-- PostgreSQL
-- JWT con `python-jose`
-- Hash de contrasenas con `passlib`
+- `POST /auth/login` usa `OAuth2PasswordRequestForm`, por eso el frontend envía `application/x-www-form-urlencoded`.
+- El backend busca el usuario por email, valida la contrasena con hashing y genera un JWT.
+- El token incluye `sub` con el email, `role` y `exp`.
+- `get_current_user` decodifica el token, busca el usuario en la base de datos y expone `user`, `role` y `email`.
+- `require_admin` permite solo `admin`.
+- `require_cliente` permite `cliente` y tambien `admin`.
 
-### Infraestructura
+### Angular
 
-- Supabase para la base de datos
-- Render para la API
-- Vercel para el frontend
+- `AuthService.login()` envia `username` y `password` al backend.
+- El servicio decodifica el JWT en el cliente, guarda `token`, `role` y `userName` en `localStorage` y restaura sesion al recargar.
+- `authInterceptor` agrega `Authorization: Bearer <token>` solo a requests que van a `API_BASE_URL`.
+- `AuthGuard` protege la ruta `/admin`.
+- `RoleGuard` valida el rol requerido desde `route.data.role`.
 
-## Estructura del proyecto
+## Sistema de Roles
 
-### `backend/`
+- `Admin` corresponde al valor de rol `admin` y, en la regla de negocio del login, al `rol_id = 1`.
+- `Cliente` corresponde al valor de rol `cliente` y, en la regla de negocio del login, al `rol_id = 2`.
+- `Admin` puede gestionar usuarios, proteinas, tipos de almuerzo, pedidos, detalles y pagos.
+- `Cliente` puede crear su pedido, ver su historial y trabajar con sus propios pagos y detalles visibles.
+- El panel administrativo solo se abre si el token es valido y el rol coincide.
 
-- `main.py`: arranque de la API, CORS y registro de rutas.
-- `db.py`: conexion a PostgreSQL usando variables de entorno.
-- `models/`: modelos ORM de SQLAlchemy.
-- `routes/`: endpoints REST.
-- `schemas/`: validacion de entrada y salida con Pydantic.
-- `auth/`: hashing, JWT y dependencias de autenticacion.
+## Logica de Negocio
 
-### `frontend/`
+- El pedido se crea con estado inicial `pendiente`.
+- Los estados validos en backend son `pendiente`, `en preparacion` y `entregado`.
+- El dashboard administrativo permite mover pedidos entre `pendiente`, `en preparacion` y `entregado`.
+- El checkout soporta `efectivo` y `nequi` como metodos persistidos en la API.
+- Si el metodo es `nequi`, la referencia es obligatoria.
+- Si el metodo es `efectivo`, el frontend calcula billetes, total entregado, faltante y vuelto para facilitar la entrega contraentrega.
+- El checkout tambien puede generar un mensaje por WhatsApp como canal auxiliar, pero la persistencia del pedido en la API usa `efectivo` o `nequi`.
+- `DetallePedido` recalcula el total del pedido cuando se crea, actualiza o elimina un detalle.
 
-- `src/app/components/`: vistas principales como login, registro y home.
-- `src/app/services/`: servicios para consumir la API.
-- `src/app/guards/`: proteccion de rutas.
-- `src/app/admin/`: modulo administrativo cargado por lazy loading.
-- `src/app/services/api/api-config.ts`: URL base de la API desplegada.
+## Modelo de Datos
 
-## Funcionalidades
+| Entidad | Campos clave | Proposito |
+| --- | --- | --- |
+| `rol` | `id`, `nombre` | Define el tipo de acceso del usuario. |
+| `usuario` | `id`, `nombre`, `lastname`, `password`, `address`, `phone`, `email`, `rol_id` | Identidad y autenticacion del cliente o administrador. |
+| `proteina` | `id`, `nombre`, `avaliable` | Catalogo de proteinas disponibles para el menu. |
+| `tipoalmuerzo` | `id`, `nombre`, `descripcion`, `precio` | Catalogo de almuerzos y precios. |
+| `pedido` | `id`, `fecha_creacion`, `estado`, `sugerencia`, `total`, `usuario_id`, `pago_id` | Cabecera del pedido. |
+| `detallepedido` | `id`, `pedidoid`, `proteinaid`, `tipalmuerzoid`, `cantidad`, `precio_unitario`, `total` | Lineas que componen cada pedido. |
+| `pago` | `id`, `metodopago`, `diadelpago`, `monto`, `referencia` | Registro del pago asociado al pedido. |
 
-- Inicio de sesion con JWT.
-- Registro de usuarios.
-- Visualizacion del menu del restaurante.
-- Gestion de pedidos.
-- Administracion de productos relacionados con el menu.
-- Control de acceso por rol para rutas administrativas.
+## API Reference
 
-## Rutas principales del frontend
+| Endpoint | Metodo | Acceso | Descripcion |
+| --- | --- | --- | --- |
+| `/` | `GET` | Publico | Verifica que la API este activa. |
+| `/auth/login` | `POST` | Publico | Autentica al usuario y retorna JWT, rol y nombre. |
+| `/auth/registro` | `POST` | Publico | Registra un nuevo cliente con `rol_id = 2`. |
+| `/usuario/addUsuario` | `POST` | Admin | Crea un usuario desde el panel. |
+| `/usuario/listUsuarios` | `GET` | Admin | Lista todos los usuarios. |
+| `/usuario/getUsuario?id=` | `GET` | Admin | Obtiene un usuario por id. |
+| `/usuario/actualizarUsuario?id=` | `PUT` | Admin | Actualiza un usuario. |
+| `/usuario/deleteUsuario?id=` | `DELETE` | Admin | Elimina un usuario. |
+| `/proteina/crearProteina` | `POST` | Admin | Crea una proteina. |
+| `/proteina/listProteinas` | `GET` | Publico | Lista las proteinas disponibles. |
+| `/proteina/getProteina?id=` | `GET` | Publico | Obtiene una proteina por id. |
+| `/proteina/actualizarProteina?id=` | `PUT` | Admin | Actualiza una proteina. |
+| `/proteina/borrarProteina?id=` | `DELETE` | Admin | Elimina una proteina. |
+| `/tipoalmuerzo/crearTipoAlmuerzo` | `POST` | Admin | Crea un tipo de almuerzo. |
+| `/tipoalmuerzo/listTiposAlmuerzo` | `GET` | Publico | Lista los tipos de almuerzo. |
+| `/tipoalmuerzo/getTipoAlmuerzo?id=` | `GET` | Publico | Obtiene un tipo de almuerzo por id. |
+| `/tipoalmuerzo/actualizarTipoAlmuerzo?id=` | `PUT` | Admin | Actualiza un tipo de almuerzo. |
+| `/tipoalmuerzo/borrarTipoAlmuerzo?id=` | `DELETE` | Admin | Elimina un tipo de almuerzo. |
+| `/pedido/crearPedidoManual` | `POST` | Admin | Crea un pedido manualmente. |
+| `/pedido/crearPedido` | `POST` | Cliente/Admin | Crea un pedido desde el checkout con pago y detalles. |
+| `/pedido/listPedidos` | `GET` | Cliente/Admin | Lista pedidos visibles para el usuario autenticado. |
+| `/pedido/getPedido?id=` | `GET` | Cliente/Admin | Obtiene un pedido visible por id. |
+| `/pedido/actualizarPedido?id=` | `PUT` | Cliente/Admin | Actualiza un pedido visible. |
+| `/pedido/actualizarEstado?id=&estado=` | `PATCH` | Admin | Cambia el estado operativo del pedido. |
+| `/pedido/borrarPedido?id=` | `DELETE` | Cliente/Admin | Elimina un pedido visible. |
+| `/detallesPedido/crearDetallesPedido` | `POST` | Admin | Crea una linea de detalle de pedido. |
+| `/detallesPedido/listDetallesPedidos` | `GET` | Cliente/Admin | Lista detalles visibles para el usuario autenticado. |
+| `/detallesPedido/getDetallesPedido?id=` | `GET` | Cliente/Admin | Obtiene un detalle por id. |
+| `/detallesPedido/actualizarDetallesPedido?id=` | `PUT` | Cliente/Admin | Actualiza un detalle y recalcula el total. |
+| `/detallesPedido/borrarDetallesPedido?id=` | `DELETE` | Cliente/Admin | Elimina un detalle y recalcula el total. |
+| `/Pago/crearPago` | `POST` | Admin | Crea un pago manual. |
+| `/Pago/listPagos` | `GET` | Cliente/Admin | Lista pagos visibles para el usuario autenticado. |
+| `/Pago/getPago?id=` | `GET` | Cliente/Admin | Obtiene un pago por id. |
+| `/Pago/actualizarPago?id=` | `PUT` | Cliente/Admin | Actualiza un pago visible. |
+| `/Pago/borrarPago?id=` | `DELETE` | Cliente/Admin | Elimina un pago visible. |
 
-- `/`: pagina principal.
-- `/logni`: login.
-- `/registrar`: registro.
-- `/admin`: area administrativa protegida.
+## Screenshots
 
-## Rutas principales del backend
+<table>
+  <tr>
+    <td align="center">
+      <strong>Home</strong><br />
+      <img src="./frontend/screenshots/home.png"/>
+    </td>
+    <td align="center">
+      <strong>Checkout</strong><br />
+      <img src="./frontend/screenshots/checkout.png"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Admin Dashboard</strong><br />
+      <img src="./frontend/screenshots/dashboard.png"/>
+    </td>
+    <td align="center">
+      <strong>Login / Registro</strong><br />
+      <img src="./frontend/screenshots/login.png"/>
+    </td>
+  </tr>
+</table>
 
-### Salud
+## Guia de Instalacion
 
-- `GET /` -> verifica que la API este activa.
+### Backend
 
-### Autenticacion
-
-- `POST /auth/login`
-- `POST /auth/registro`
-
-### Recursos
-
-- `/usuario`
-- `/proteina`
-- `/tipoalmuerzo`
-- `/pedido`
-- `/detallesPedido`
-- `/Pago`
-
-## Base de datos
-
-La base de datos es PostgreSQL en Supabase. El backend se conecta mediante variables de entorno y crea las tablas al iniciar con `Base.metadata.create_all(bind=engine)`.
-
-Entidades principales:
-
-- `Usuario`
-- `Rol`
-- `Proteina`
-- `TipoAlmuerzo`
-- `Pedido`
-- `DetallePedido`
-- `Pago`
-
-## Variables de entorno
-
-### Backend `backend/.env`
-
-```env
-DB_USER=tu_usuario
-DB_PASSWORD=tu_password
-DB_HOST=tu-host.supabase.co
-DB_PORT=5432
-DB_NAME=tu_base_de_datos
-SECRET_KEY=una_clave_secreta
-ALGORITHM=HS256
-EXPIRE_MINUTES=60
-CORS_ORIGINS=https://tu-frontend.vercel.app,http://localhost:4200
+```bash
+cd backend
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+uvicorn main:app --reload
 ```
 
 ### Frontend
-
-La URL de la API se define en:
-
-- `frontend/src/app/services/api/api-config.ts`
-
-Actualmente apunta a:
-
-```ts
-export const API_BASE_URL = 'https://utb-caseritos.onrender.com';
-```
-
-Si cambias el dominio de Render, actualiza ese archivo.
-
-## Instalacion local
-
-### 1. Clonar e instalar frontend
 
 ```bash
 cd frontend
 npm install
-```
-
-### 2. Instalar backend
-
-Desde la carpeta `backend/`:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-## Ejecucion local
-
-### Backend
-
-Desde `backend/`:
-
-```bash
-uvicorn main:app --reload
-```
-
-La API queda disponible en:
-
-- `http://localhost:8000`
-- `http://localhost:8000/docs`
-
-### Frontend
-
-Desde `frontend/`:
-
-```bash
 npm start
 ```
 
-La aplicacion queda disponible en:
+## Estructura del Proyecto
 
-- `http://localhost:4200`
+<details>
+<summary>Ver estructura de carpetas</summary>
+
+```text
+backend/
+  auth/
+    dependencies.py
+    hashing.py
+    jwt.py
+  models/
+    base.py
+    DetallePedido.py
+    Pago.py
+    Pedido.py
+    Proteina.py
+    Rol.py
+    TipoAlmuerzo.py
+    Usuario.py
+  routes/
+    auth.py
+    DetallePedido_routes.py
+    Pago_routes.py
+    Pedido_routes.py
+    Proteina_routes.py
+    TipoAlmuerzo_routes.py
+    Usuario_routes.py
+  schemas/
+    DetallePedido_schemas.py
+    Login_schema.py
+    Pago_schemas.py
+    Pedido_schemas.py
+    Proteina_schemas.py
+    Roles_schemas.py
+    TipoAlmuerzo_schemas.py
+    Usuario_schemas.py
+  db.py
+  main.py
+  Procfile
+  runtime.txt
+
+frontend/
+  src/app/
+    components/
+      admin/
+      home/
+      login/
+      registrar/
+    guards/
+    routes/
+    services/
+  src/assets/
+  src/main.ts
+  src/main.server.ts
+  src/server.ts
+  angular.json
+  package.json
+```
+
+</details>
 
 ## Despliegue
 
-### Render
+- API en Render con `web: uvicorn main:app --host 0.0.0.0 --port $PORT`.
+- Base de datos PostgreSQL en Supabase.
+- Frontend Angular publicado como aplicacion web y consumiendo `API_BASE_URL`.
 
-La API se despliega como servicio web en Render. Debe tener configuradas las variables de entorno del backend y el comando de arranque correspondiente a FastAPI/uvicorn.
+## Licencia
 
-### Supabase
-
-Supabase hospeda la base de datos PostgreSQL. El backend usa la cadena de conexion configurada en `backend/.env`.
-
-### Vercel
-
-El frontend se publica en Vercel. Debe apuntar a la URL publica de la API en Render.
-
-## Autenticacion y roles
-
-- El login usa `application/x-www-form-urlencoded`.
-- El backend retorna un `access_token` JWT y el rol del usuario.
-- El frontend guarda `token` y `role` en `localStorage`.
-- Las rutas administrativas usan guards para bloquear acceso sin sesion o sin rol `admin`.
-
-## Notas tecnicas
-
-- El backend habilita CORS para los orígenes definidos en `CORS_ORIGINS`.
-- La API crea tablas automaticamente al iniciar.
-- El proyecto contiene archivos generados por Angular y Python cacheados localmente; no forman parte de la logica del sistema.
-
-## Estado del proyecto
-
-El repositorio ya tiene una base funcional para autenticacion, catalogo y pedidos. Si se va a mantener en equipo, el siguiente paso razonable es centralizar las URLs de entorno, estandarizar nombres de rutas y documentar el contrato de cada endpoint.
+Proyecto distribuido bajo licencia MIT.

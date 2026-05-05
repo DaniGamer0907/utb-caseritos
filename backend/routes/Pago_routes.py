@@ -78,6 +78,22 @@ def actualizar_pago(
         db.commit()
         return {"mensaje": "Pago actualizado correctamente"}
 
+@router.patch("/actualizarEstado", dependencies=[Depends(require_admin)])
+def actualizar_estado_pago(
+    id: int,
+    estado: str,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    pago = _obtener_pago_visible(db, id, current_user)
+
+    if not pago:
+        raise HTTPException(status_code=404, detail="Pago no encontrado")
+
+    pago.estado = estado  
+    db.commit()
+
+    return {"mensaje": "Estado actualizado correctamente"}
 
 @router.delete("/borrarPago", dependencies=[Depends(require_cliente)])
 def eliminar_pago(

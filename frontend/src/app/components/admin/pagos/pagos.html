@@ -1,8 +1,29 @@
 <section class="module-shell">
+
   <div class="module-head">
-    <div>
-      <h2>Pagos</h2>
-      <p>Historial de pagos registrados por los clientes.</p>
+    <h2>Pagos</h2>
+    <p>Historial de pagos registrados por los clientes.</p>
+
+    <div class="menu-pagos">
+      <div class="top-bar">
+        <div class="historial-pago">
+
+          <button 
+            (click)="cambiarSeccion('pendiente')" 
+            [class.activo]="seccion === 'pendiente'"
+            class="hpago">
+            Pendiente
+          </button>
+
+          <button 
+            (click)="cambiarSeccion('confirmado')" 
+            [class.activo]="seccion === 'confirmado'"
+            class="hpago">
+            Confirmados
+          </button>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -11,25 +32,55 @@
   }
 
   @if (isLoading()) {
-    <p style="color:#9A856B; padding: 16px;">Cargando pagos...</p>
+    <p style="padding:16px;">Cargando pagos...</p>
   } @else {
-    @if (pagos().length === 0) {
-      <p style="color:#9A856B; padding: 16px;">No hay pagos registrados todavía.</p>
-    } @else {
+
+    <!-- 🔵 PENDIENTES -->
+    <div *ngIf="seccion === 'pendiente'">
+
       <div class="payments-grid">
+
         @for (pago of pagos(); track pago.id) {
-          <div class="payment-card">
-            <strong>Pago #{{ pago.id }}</strong>
-            <p>Método: {{ pago.metodopago }}</p>
-            <p>Monto: ${{ pago.monto | number }}</p>
-            <p style="font-size:12px; color:#9A856B;">Fecha: {{ pago.diadelpago }}</p>
-            @if (pago.referencia) {
-              <p style="font-size:12px; color:#9A856B;">Ref: {{ pago.referencia }}</p>
-            }
-            <span class="payment-badge paid">Registrado</span>
-          </div>
+          @if (!pago.estado || pago.estado === 'pendiente') {
+
+            <div class="payment-card">
+              <strong>Pago #{{ pago.id }}</strong>
+
+              <p>Método: {{ pago.metodopago }}</p>
+              <p>Monto: ${{ pago.monto }}</p>
+
+              <button (click)="confirmarPago(pago)" class="payment-success">
+                Recibido
+              </button>
+            </div>
+
+          }
         }
+
       </div>
-    }
+
+    </div>
+
+    <!-- 🟢 CONFIRMADOS -->
+    <div *ngIf="seccion === 'confirmado'">
+
+      <div class="payments-grid">
+
+        @for (pago of pagos(); track pago.id) {
+          @if (pago.estado === 'confirmado') {
+
+            <div class="payment-card">
+              <strong>Pago #{{ pago.id }}</strong>
+              <p>Monto: ${{ pago.monto }}</p>
+            </div>
+
+          }
+        }
+
+      </div>
+
+    </div>
+
   }
+
 </section>

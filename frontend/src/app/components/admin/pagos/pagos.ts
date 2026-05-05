@@ -14,8 +14,21 @@ export class PagosComponent implements OnInit {
   private readonly adminService = inject(AdminService);
 
   pagos     = signal<Pago[]>([]);
+  confirmados = signal<Pago[]>([]);
   isLoading = signal(true);
   error     = signal('');
+  seccion = 'pendiente';
+
+  cambiarSeccion(seccion: string) {
+    this.seccion = seccion;
+  }
+
+  confirmarPago(pago: Pago) {
+  this.adminService.actualizarEstadoPago(pago.id, 'confirmado')
+    .subscribe(() => {
+      pago.estado = 'confirmado';
+    });
+  }
 
   ngOnInit(): void {
     this.adminService.listPagos().subscribe({

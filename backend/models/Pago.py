@@ -8,6 +8,7 @@ class Pago(Base):
     metodopago = Column(String)
     diadelpago = Column(Date)
     monto = Column(Float)
+    estado = Column(String, default="pendiente")
     referencia = Column(String, nullable=True)
 
     #relaciones

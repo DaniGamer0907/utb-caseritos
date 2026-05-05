@@ -36,6 +36,7 @@ export interface Pago {
   diadelpago: string;
   monto: number;
   referencia?: string;
+  estado:string;
 }
 
 export interface Pedido {
@@ -76,6 +77,14 @@ export class AdminService {
     );
   }
 
+  actualizarEstadoPago(id: number, estado: string) {
+  return this.http.patch(
+    `${this.apiUrl}/Pago/actualizarEstado?id=${id}&estado=${encodeURIComponent(estado)}`,
+    {},
+    { headers: this.buildHeaders() }
+  );
+}
+  
   actualizarEstadoPedido(id: number, estado: string): Observable<ApiResponse> {
     return this.http.patch<ApiResponse>(
       `${this.apiUrl}/pedido/actualizarEstado?id=${id}&estado=${encodeURIComponent(estado)}`,
